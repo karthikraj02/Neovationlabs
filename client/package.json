@@ -23,7 +23,6 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@tailwindcss/oxide-win32-x64-msvc": "^4.3.3",
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
@@ -36,5 +35,8 @@
     "tailwindcss": "^4.3.3",
     "vite": "^8.2.0",
     "vitest": "^4.1.11"
+  },
+  "optionalDependencies": {
+    "@tailwindcss/oxide-win32-x64-msvc": "^4.3.3"
   }
 }
