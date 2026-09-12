@@ -6,6 +6,7 @@ import AgenticAI from "../components/sections/AgenticAI";
 import SoftwareEngineering from "../components/sections/SoftwareEngineering";
 import DataInfrastructure from "../components/sections/DataInfrastructure";
 import ComputerVision from "../components/sections/ComputerVision";
+import ProductDemos from "../components/sections/ProductDemos";
 import TechEcosystem from "../components/sections/TechEcosystem";
 import Process from "../components/sections/Process";
 import Solutions from "../components/sections/Solutions";
@@ -28,6 +29,7 @@ export default function Home() {
       <SoftwareEngineering />
       <DataInfrastructure />
       <ComputerVision />
+      <ProductDemos />
       <TechEcosystem />
       <Process />
       <Solutions />

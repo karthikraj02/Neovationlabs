@@ -8,6 +8,7 @@ import Logo from "../ui/Logo";
 const links = [
   { to: "/services", label: "Services" },
   { to: "/solutions", label: "Solutions" },
+  { to: "/demos", label: "Demos" },
   { to: "/technology", label: "Technology" },
   { to: "/about", label: "About" },
   { to: "/insights", label: "Insights" },
