@@ -10,6 +10,7 @@ const SolutionsPage = lazy(() => import("./pages/Solutions"));
 const TechnologyPage = lazy(() => import("./pages/Technology"));
 const DemosPage = lazy(() => import("./pages/Demos"));
 const DemoDetail = lazy(() => import("./pages/DemoDetail"));
+const BookDemo = lazy(() => import("./pages/BookDemo"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Insights = lazy(() => import("./pages/Insights"));
 const InsightDetail = lazy(() => import("./pages/InsightDetail"));
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/technology" element={<TechnologyPage />} />
             <Route path="/demos" element={<DemosPage />} />
             <Route path="/demos/:slug" element={<DemoDetail />} />
+            <Route path="/book-demo" element={<BookDemo />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/insights/:slug" element={<InsightDetail />} />

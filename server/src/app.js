@@ -10,6 +10,7 @@ const { notFoundHandler, errorHandler } = require("./middleware/errorHandler");
 
 const healthRoutes = require("./routes/healthRoutes");
 const contactRoutes = require("./routes/contactRoutes");
+const demoBookingRoutes = require("./routes/demoBookingRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const insightRoutes = require("./routes/insightRoutes");
 
@@ -37,6 +38,7 @@ app.use(generalLimiter);
 
 app.use("/api/health", healthRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/demo-bookings", demoBookingRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/insights", insightRoutes);
 

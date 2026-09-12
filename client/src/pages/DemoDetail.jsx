@@ -1,5 +1,5 @@
 import { useParams, Navigate, Link } from "react-router-dom";
-import { ShieldCheck, Compass } from "lucide-react";
+import { ShieldCheck, Compass, Video } from "lucide-react";
 import PageHero from "../components/ui/PageHero";
 import Container from "../components/ui/Container";
 import SectionHeading from "../components/ui/SectionHeading";
@@ -45,7 +45,20 @@ export default function DemoDetail() {
             label={demo.discipline}
             duration={demo.duration}
           />
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="mt-6 flex flex-wrap items-center gap-4">
+            <Link
+              to={`/book-demo?demo=${demo.slug}`}
+              className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-void transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(94,234,212,0.35)]"
+            >
+              <Video size={16} aria-hidden="true" />
+              Book a live demo of this
+            </Link>
+            <p className="text-sm text-ink-dim">
+              We'll run the real application on a Google Meet call and answer questions live.
+            </p>
+          </div>
+
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             <p className="font-mono text-[11px] text-ink-faint">{demo.note}</p>
             <div className="flex flex-wrap gap-1.5">
               {demo.tags.map((tag) => (

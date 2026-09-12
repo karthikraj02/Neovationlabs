@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Video } from "lucide-react";
 import PageHero from "../components/ui/PageHero";
 import Container from "../components/ui/Container";
 import VideoPlayer from "../components/ui/VideoPlayer";
@@ -21,6 +21,22 @@ export default function DemosPage() {
         title="Working systems, recorded end to end."
         description="Each of these is a running prototype built in the lab — captured as-is, so you can see the behaviour rather than a description of it."
       />
+
+      <section className="border-b border-line bg-surface/40 py-10">
+        <Container className="flex flex-wrap items-center justify-between gap-5">
+          <p className="max-w-xl text-sm leading-relaxed text-ink-dim">
+            Want it run against your own cameras, documents, or store layout? We'll walk
+            through the live application with you on a Google Meet call.
+          </p>
+          <Link
+            to="/book-demo"
+            className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-void transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(94,234,212,0.35)]"
+          >
+            <Video size={16} aria-hidden="true" />
+            Book a live demo
+          </Link>
+        </Container>
+      </section>
 
       <section className="bg-void py-20 md:py-24">
         <Container>
@@ -66,6 +82,13 @@ export default function DemosPage() {
                 </div>
 
                 <div className="mt-7 flex flex-wrap items-center gap-4">
+                  <Link
+                    to={`/book-demo?demo=${demo.slug}`}
+                    className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium text-ink transition-all duration-300 hover:border-signal-dim hover:shadow-[0_0_20px_rgba(94,234,212,0.15)]"
+                  >
+                    <Video size={15} className="text-signal" aria-hidden="true" />
+                    Book this demo live
+                  </Link>
                   <Link
                     to={`/demos/${demo.slug}`}
                     className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-signal"

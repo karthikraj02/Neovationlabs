@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Video } from "lucide-react";
 import Container from "../ui/Container";
 import SectionHeading from "../ui/SectionHeading";
 import VideoPlayer from "../ui/VideoPlayer";
@@ -88,6 +88,13 @@ export default function ProductDemos() {
               </p>
               <div className="mt-5 flex flex-wrap items-center gap-4">
                 <Link
+                  to={`/book-demo?demo=${active.slug}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium text-ink transition-all duration-300 hover:border-signal-dim hover:shadow-[0_0_20px_rgba(94,234,212,0.15)]"
+                >
+                  <Video size={15} className="text-signal" aria-hidden="true" />
+                  Book a live demo
+                </Link>
+                <Link
                   to={`/demos/${active.slug}`}
                   className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-signal"
                 >
@@ -98,16 +105,16 @@ export default function ProductDemos() {
                     aria-hidden="true"
                   />
                 </Link>
-                <div className="flex flex-wrap gap-1.5">
-                  {active.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-line-soft px-2.5 py-1 font-mono text-[10px] text-ink-faint"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {active.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-line-soft px-2.5 py-1 font-mono text-[10px] text-ink-faint"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
             </motion.div>
           </div>

@@ -11,6 +11,7 @@ const columns = [
       { label: "About", to: "/about" },
       { label: "Services", to: "/services" },
       { label: "Demos", to: "/demos" },
+      { label: "Book a Live Demo", to: "/book-demo" },
       { label: "Technology", to: "/technology" },
       { label: "Insights", to: "/insights" },
       { label: "Contact", to: "/contact" },

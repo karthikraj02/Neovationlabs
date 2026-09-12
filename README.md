@@ -142,6 +142,7 @@ npm run dev:server
 |---|---|---|
 | `GET` | `/api/health` | Health check — `{ status: "ok", service: "neovationlabs-api" }` |
 | `POST` | `/api/contact` | Submit a project inquiry. Rate-limited (5 / 15 min per IP). Validates and sanitizes input, saves to MongoDB, sends an email notification if SMTP is configured. |
+| `POST` | `/api/demo-bookings` | Request a live Google Meet demo. Same rate limit, validation, sanitizing, and email-notification path as `/api/contact`. |
 | `GET` | `/api/services` | List services (from MongoDB, if seeded) |
 | `GET` | `/api/services/:slug` | Get one service |
 | `GET` | `/api/insights` | List insights/blog posts (from MongoDB, if seeded) |
@@ -167,6 +168,36 @@ Response:
 { "success": true, "message": "Your project request has been received.", "id": "..." }
 ```
 
+**Example — `POST /api/demo-bookings`**
+
+`demos` accepts the slugs in `client/src/data/demos.js`; `preferredTime` must be
+one of the offered windows, and `preferredDate` cannot be in the past.
+
+```json
+{
+  "name": "Grace Hopper",
+  "company": "Naval Systems",
+  "email": "grace@example.com",
+  "phone": "",
+  "demos": ["cross-camera-face-search", "offline-document-qa"],
+  "preferredDate": "2026-10-02",
+  "preferredTime": "13:00 – 15:00",
+  "timezone": "Asia/Kolkata",
+  "attendees": 3,
+  "notes": "Two people from security ops will join."
+}
+```
+
+Response:
+
+```json
+{ "success": true, "message": "Your demo request has been received.", "id": "..." }
+```
+
+Bookings land in the `demobookings` collection with `status: "requested"`. The
+team confirms the slot and sends the Google Meet invite manually, then fills in
+`meetingLink` and `scheduledFor` on the record.
+
 ## Testing
 
 ```bash
@@ -177,9 +208,10 @@ npm run test:client   # client only
 
 **Server** — Jest/Supertest against the real Express app: health check,
 unknown-route 404, contact-form validation (valid, empty, invalid, NoSQL-
-injection-style, and honeypot-triggered input), simulated database failure,
-and a dedicated test proving the `/api/contact` rate limiter actually returns
-`429` after 5 requests. Database calls are mocked, so tests don't require a
+injection-style, and honeypot-triggered input), demo-booking validation
+(unknown demo slug, no demo selected, past date, unoffered time window,
+honeypot), simulated database failures, and a dedicated test proving the
+`/api/contact` rate limiter actually returns `429` after 5 requests. Database calls are mocked, so tests don't require a
 live MongoDB connection.
 
 **Client** — Vitest + React Testing Library: route rendering (home page and
@@ -202,10 +234,12 @@ cleanly with `oxlint` reporting zero warnings.
 
 - `helmet` for secure HTTP headers
 - CORS restricted to `CLIENT_URL`
-- Rate limiting: 5 requests / 15 min on `/api/contact`, 300 / 15 min globally
+- Rate limiting: 5 requests / 15 min on `/api/contact` and `/api/demo-bookings`,
+  300 / 15 min globally
   (verified by a dedicated test, not just configured and assumed)
-- A honeypot field on the contact form, validated on both client and server,
-  as a first line of defense against basic bots without a CAPTCHA
+- A honeypot field on the contact and demo-booking forms, validated on both
+  client and server, as a first line of defense against basic bots without a
+  CAPTCHA
 - Request body size capped at 20kb
 - All input validated server-side with Zod (client-side validation is a
   convenience, not a security boundary)
