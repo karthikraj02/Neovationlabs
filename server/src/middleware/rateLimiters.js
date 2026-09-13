@@ -22,4 +22,18 @@ const generalLimiter = rateLimit({
   skip: () => isTest,
 });
 
-module.exports = { contactLimiter, generalLimiter };
+// Failed sign-ins only; a successful login doesn't use up the allowance.
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  skip: () => isTest,
+  message: {
+    success: false,
+    message: "Too many sign-in attempts. Please wait 15 minutes and try again.",
+  },
+});
+
+module.exports = { contactLimiter, generalLimiter, loginLimiter };

@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RootLayout from "./components/layout/RootLayout";
 import Home from "./pages/Home";
+import { ADMIN_BASE } from "./admin/config";
 
 const About = lazy(() => import("./pages/About"));
 const ServicesPage = lazy(() => import("./pages/Services"));
@@ -17,6 +18,7 @@ const InsightDetail = lazy(() => import("./pages/InsightDetail"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const AdminRoot = lazy(() => import("./admin/AdminRoot"));
 
 function PageFallback() {
   return (
@@ -31,6 +33,7 @@ export default function App() {
     <BrowserRouter>
       <Suspense fallback={<PageFallback />}>
         <Routes>
+          <Route path={`${ADMIN_BASE}/*`} element={<AdminRoot />} />
           <Route element={<RootLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />

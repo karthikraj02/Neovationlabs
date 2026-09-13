@@ -13,6 +13,8 @@ const contactRoutes = require("./routes/contactRoutes");
 const demoBookingRoutes = require("./routes/demoBookingRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const insightRoutes = require("./routes/insightRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
@@ -41,6 +43,8 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/demo-bookings", demoBookingRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/insights", insightRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

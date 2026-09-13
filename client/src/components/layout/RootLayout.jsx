@@ -3,12 +3,14 @@ import { useEffect } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollProgress from "../ui/ScrollProgress";
+import { trackPageView } from "../../lib/analytics";
 
 export default function RootLayout() {
   const { pathname } = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    trackPageView(pathname);
   }, [pathname]);
 
   return (
