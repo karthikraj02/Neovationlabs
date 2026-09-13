@@ -1,7 +1,10 @@
 export const techCategories = [
   {
-    label: "AI",
-    items: ["OpenAI", "Anthropic", "Llama", "Mistral", "Hugging Face"],
+    label: "AI / ML",
+    items: [
+      "OpenAI", "Anthropic", "Gemini", "Mistral", "Llama", "Ollama",
+      "Hugging Face", "LangChain", "TensorFlow", "scikit-learn",
+    ],
   },
   {
     label: "Frontend",
@@ -9,15 +12,19 @@ export const techCategories = [
   },
   {
     label: "Backend",
-    items: ["Node.js", "Express", "Python", "FastAPI"],
+    items: ["Node.js", "Express", "Python", "FastAPI", "Java", "Spring Boot"],
+  },
+  {
+    label: "Mobile",
+    items: ["Swift", "Kotlin", "React Native", "Flutter"],
   },
   {
     label: "Data",
-    items: ["MongoDB", "PostgreSQL", "Redis", "Vector databases"],
+    items: ["PostgreSQL", "MongoDB", "MS SQL Server", "MySQL", "Redis", "Vector databases"],
   },
   {
     label: "Infrastructure",
-    items: ["Docker", "Kubernetes", "AWS", "Azure", "GCP"],
+    items: ["AWS", "Azure", "GCP", "Docker", "Kubernetes", "Jenkins"],
   },
   {
     label: "MLOps",

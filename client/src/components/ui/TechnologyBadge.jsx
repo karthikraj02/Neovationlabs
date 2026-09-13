@@ -1,6 +1,9 @@
-export default function TechnologyBadge({ children }) {
+import TechIcon from "./TechIcon";
+
+export default function TechnologyBadge({ children, icon = false }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-line bg-surface px-3.5 py-1.5 font-mono text-xs text-ink-dim transition-colors duration-300 hover:border-signal-dim hover:text-ink">
+    <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 font-mono text-xs text-ink-dim transition-colors duration-300 hover:border-signal-dim hover:text-ink">
+      {icon && <TechIcon name={children} />}
       {children}
     </span>
   );
