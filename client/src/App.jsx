@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import { ADMIN_BASE } from "./admin/config";
 
 const About = lazy(() => import("./pages/About"));
+const Careers = lazy(() => import("./pages/Careers"));
 const ServicesPage = lazy(() => import("./pages/Services"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 const SolutionsPage = lazy(() => import("./pages/Solutions"));
@@ -37,6 +38,7 @@ export default function App() {
           <Route element={<RootLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
+            <Route path="/careers" element={<Careers />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/services/:slug" element={<ServiceDetail />} />
             <Route path="/solutions" element={<SolutionsPage />} />

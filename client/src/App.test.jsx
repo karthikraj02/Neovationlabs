@@ -33,4 +33,14 @@ describe("App routing", () => {
     expect(await screen.findByRole("heading", { name: heading })).toBeInTheDocument();
     expect(screen.getByText(tech)).toBeInTheDocument();
   });
+
+  it("links to careers from the footer only, and the page renders", async () => {
+    renderAtPath("/careers");
+    expect(await screen.findByRole("heading", { level: 1, name: /build what's next with us/i })).toBeInTheDocument();
+
+    const careerLinks = screen.getAllByRole("link", { name: "Careers" });
+    expect(careerLinks).toHaveLength(1);
+    expect(careerLinks[0].closest("footer")).not.toBeNull();
+    expect(careerLinks[0]).toHaveAttribute("href", "/careers");
+  });
 });

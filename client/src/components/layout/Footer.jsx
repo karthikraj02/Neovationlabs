@@ -9,6 +9,7 @@ const columns = [
     heading: "Company",
     links: [
       { label: "About", to: "/about" },
+      { label: "Careers", to: "/careers" },
       { label: "Services", to: "/services" },
       { label: "Demos", to: "/demos" },
       { label: "Book a Live Demo", to: "/book-demo" },
