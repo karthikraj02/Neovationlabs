@@ -2,100 +2,7 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import Button from "../ui/Button";
 import Container from "../ui/Container";
-
-const nodes = [
-  { x: 60, y: 60 }, { x: 220, y: 30 }, { x: 340, y: 110 },
-  { x: 120, y: 170 }, { x: 300, y: 230 }, { x: 60, y: 280 },
-  { x: 380, y: 280 }, { x: 200, y: 330 },
-];
-
-const edges = [
-  [0, 1], [1, 2], [0, 3], [1, 3], [3, 4], [2, 4],
-  [3, 5], [4, 6], [3, 7], [4, 7],
-];
-
-function NetworkVisual() {
-  return (
-    <svg
-      viewBox="0 0 420 380"
-      className="h-full w-full"
-      role="img"
-      aria-label="Animated diagram of an intelligent network of connected nodes"
-    >
-      <defs>
-        <linearGradient id="edgeGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#5eead4" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="#8b7cf6" stopOpacity="0.35" />
-        </linearGradient>
-      </defs>
-
-      {edges.map(([a, b], i) => (
-        <motion.line
-          key={i}
-          x1={nodes[a].x}
-          y1={nodes[a].y}
-          x2={nodes[b].x}
-          y2={nodes[b].y}
-          stroke="url(#edgeGrad)"
-          strokeWidth="1"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1.4, delay: 0.4 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-        />
-      ))}
-
-      {edges.map(([a, b], i) => (
-        <motion.circle
-          key={`pulse-${i}`}
-          r="2.2"
-          fill="#5eead4"
-          initial={{ opacity: 0 }}
-          animate={{
-            cx: [nodes[a].x, nodes[b].x],
-            cy: [nodes[a].y, nodes[b].y],
-            opacity: [0, 1, 0],
-          }}
-          transition={{
-            duration: 2.6,
-            delay: 2 + i * 0.5,
-            repeat: Infinity,
-            repeatDelay: edges.length * 0.5,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-
-      {nodes.map((n, i) => (
-        <motion.g key={i}>
-          <motion.circle
-            cx={n.x}
-            cy={n.y}
-            r={i === 3 || i === 4 ? 5 : 3.4}
-            fill="#06070a"
-            stroke={i === 3 || i === 4 ? "#5eead4" : "#5b6178"}
-            strokeWidth="1.4"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.15 + i * 0.07 }}
-          />
-          {(i === 3 || i === 4) && (
-            <motion.circle
-              cx={n.x}
-              cy={n.y}
-              r={5}
-              fill="none"
-              stroke="#5eead4"
-              strokeWidth="1"
-              initial={{ opacity: 0.6, scale: 1 }}
-              animate={{ opacity: 0, scale: 2.4 }}
-              transition={{ duration: 2.2, repeat: Infinity, ease: "easeOut" }}
-            />
-          )}
-        </motion.g>
-      ))}
-    </svg>
-  );
-}
+import LLMVisual from "../ui/LLMVisual";
 
 export default function Hero() {
   return (
@@ -154,9 +61,9 @@ export default function Hero() {
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="relative mx-auto aspect-square w-full max-w-md"
+          className="relative mx-auto w-full max-w-md"
         >
-          <NetworkVisual />
+          <LLMVisual />
         </motion.div>
       </Container>
 
