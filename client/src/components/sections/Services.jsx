@@ -14,7 +14,7 @@ function ServiceCard({ service, i }) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay: (i % 4) * 0.06, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.5, delay: (i % 3) * 0.06, ease: [0.16, 1, 0.3, 1] }}
       className="group relative rounded-2xl border border-line bg-surface p-6 transition-colors duration-500 hover:border-signal-dim md:p-7"
     >
       <div className="flex items-start justify-between gap-4">
@@ -70,7 +70,7 @@ export default function Services() {
           <SectionHeading
             eyebrow="Capabilities"
             title="AI & Software, Engineered Around Your Business."
-            description="Seven disciplines, one team — from foundation-model applications to the infrastructure that keeps them running in production."
+            description="Nine disciplines, one team — from foundation-model applications and connected devices to the networks and infrastructure that keep them running in production."
           />
           <Link
             to="/services"
@@ -80,7 +80,7 @@ export default function Services() {
           </Link>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service, i) => (
             <ServiceCard key={service.slug} service={service} i={i} />
           ))}

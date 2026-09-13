@@ -81,6 +81,15 @@ describe("POST /api/contact", () => {
     expect(ContactSubmission.create).not.toHaveBeenCalled();
   });
 
+  it.each(["Networking", "Internet of Things"])("accepts the %s project type", async (projectType) => {
+    ContactSubmission.create.mockResolvedValue({ _id: "abc123" });
+
+    const res = await request(app).post("/api/contact").send({ ...validPayload, projectType });
+
+    expect(res.statusCode).toBe(201);
+    expect(ContactSubmission.create).toHaveBeenCalledWith(expect.objectContaining({ projectType }));
+  });
+
   it("returns a 500 with a safe message when the database save fails", async () => {
     ContactSubmission.create.mockRejectedValue(new Error("connection timeout"));
 

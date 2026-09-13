@@ -12,6 +12,9 @@ import { usePageMeta } from "../hooks/usePageMeta";
 import MetricsCTA from "../components/sections/MetricsCTA";
 import { getServiceBySlug, services } from "../data/services";
 
+// Used for services that don't list their own technologies.
+const DEFAULT_TECHNOLOGIES = ["Node.js", "Python", "React", "MongoDB", "Docker", "AWS"];
+
 function faqsFor(service) {
   return [
     {
@@ -70,7 +73,7 @@ export default function ServiceDetail() {
 
   if (!service) return <Navigate to="/404" replace />;
 
-  const faqs = faqsFor(service);
+  const faqs = service.faqs ?? faqsFor(service);
   const otherServices = services.filter((s) => s.slug !== slug).slice(0, 3);
 
   return (
@@ -140,7 +143,7 @@ export default function ServiceDetail() {
         <Container>
           <SectionHeading eyebrow="Technology" title="Technologies we work with for this service." />
           <div className="mt-8 flex flex-wrap gap-2">
-            {["Node.js", "Python", "React", "MongoDB", "Docker", "AWS"].map((t) => (
+            {(service.technologies ?? DEFAULT_TECHNOLOGIES).map((t) => (
               <TechnologyBadge key={t}>{t}</TechnologyBadge>
             ))}
           </div>

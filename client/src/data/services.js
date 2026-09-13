@@ -182,6 +182,90 @@ export const services = [
       "Early anomaly detection across transactions or sensors",
     ],
   },
+  {
+    index: "08",
+    slug: "networking",
+    name: "Networking & Infrastructure",
+    short:
+      "Secure, resilient networks — from office LANs and Wi-Fi to cloud connectivity, VPNs, and round-the-clock monitoring.",
+    description:
+      "We design, deploy, and manage the networks your systems run on — wired and wireless LANs, secure site-to-site and cloud connectivity, and the monitoring that keeps them reliable as you grow.",
+    capabilities: [
+      "Network design & architecture",
+      "LAN, WAN & enterprise Wi-Fi",
+      "Firewalls & network security",
+      "VPN & zero-trust remote access",
+      "Cloud & hybrid connectivity",
+      "Network monitoring & observability",
+      "Structured cabling & site surveys",
+    ],
+    problem:
+      "Networks tend to grow one device and one quick fix at a time, until slow connections, dead zones, and security gaps start costing real work — and nobody has a clear picture of how it all fits together.",
+    solution:
+      "We map what you have, design a segmented and documented architecture, and roll it out with monitoring and alerting from day one — so problems show up on a dashboard before users notice them.",
+    useCases: [
+      "Office and multi-site networks with secure site-to-site links",
+      "Warehouse, campus, and factory Wi-Fi coverage without dead zones",
+      "Secure remote and hybrid access to internal systems and the cloud",
+    ],
+    technologies: ["Cisco", "Ubiquiti", "Fortinet", "pfSense", "WireGuard", "AWS VPC", "Zabbix", "Grafana"],
+    faqs: [
+      {
+        q: "Can you work with the network equipment we already have?",
+        a: "Usually, yes. We start with an audit of your current hardware and configuration, keep what is sound, and only recommend replacing equipment that is end-of-life, unsupported, or the actual cause of the problem.",
+      },
+      {
+        q: "Will the rollout disrupt day-to-day operations?",
+        a: "Changes are planned in stages and scheduled into maintenance windows, with a tested rollback for each step, so critical systems stay online while the new network comes up.",
+      },
+      {
+        q: "Do you support the network after it goes live?",
+        a: "Yes. Every deployment ships with monitoring and full documentation, and we offer ongoing management — alert response, firmware and security updates, and capacity planning as you grow.",
+      },
+    ],
+  },
+  {
+    index: "09",
+    slug: "iot",
+    name: "Internet of Things (IoT)",
+    short:
+      "Connected devices, sensors, and gateways that stream real-world data into dashboards, alerts, and AI models.",
+    description:
+      "We build end-to-end IoT systems — sensor and device integration, edge gateways, secure device-to-cloud messaging, and the dashboards and analytics that turn physical signals into decisions.",
+    capabilities: [
+      "Sensor & device integration",
+      "Edge gateways & edge computing",
+      "MQTT & device-to-cloud messaging",
+      "Device provisioning & OTA updates",
+      "Real-time dashboards & alerting",
+      "Predictive maintenance models",
+      "IoT security & fleet management",
+    ],
+    problem:
+      "Equipment, environments, and assets produce valuable signals, but the data stays trapped on the device — or arrives in formats nothing downstream can use.",
+    solution:
+      "We connect devices through secure gateways, stream their data into a reliable pipeline, and put live dashboards, alerts, and predictive models on top — with provisioning and over-the-air updates so the fleet stays manageable.",
+    useCases: [
+      "Predictive maintenance for motors, pumps, and production equipment",
+      "Cold-chain and environmental monitoring with instant alerts",
+      "Asset and fleet tracking across multiple sites",
+    ],
+    technologies: ["ESP32", "Raspberry Pi", "MQTT", "AWS IoT Core", "Node-RED", "InfluxDB", "Grafana", "Python"],
+    faqs: [
+      {
+        q: "Can you connect the equipment and sensors we already have?",
+        a: "In most cases. Industrial equipment commonly speaks protocols like Modbus or OPC UA, and we bridge those through an edge gateway rather than replacing machinery that already works.",
+      },
+      {
+        q: "What happens when a site loses its internet connection?",
+        a: "Gateways buffer readings locally and sync once the connection returns, and time-critical rules run at the edge, so alerts and control logic don't depend on a live link to the cloud.",
+      },
+      {
+        q: "How do you keep connected devices secure?",
+        a: "Every device gets its own identity and certificate, traffic is encrypted end to end, and firmware is updated over the air — so one compromised device can't be used to reach the rest of your network.",
+      },
+    ],
+  },
 ];
 
 export const getServiceBySlug = (slug) => services.find((s) => s.slug === slug);

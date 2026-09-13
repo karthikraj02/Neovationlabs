@@ -41,6 +41,16 @@ const services = [
     description: "We turn historical and real-time data into forecasting, risk assessment, and anomaly detection systems.",
     capabilities: ["Forecasting models", "Risk scoring", "Anomaly detection"],
     technologies: ["Python", "scikit-learn"] },
+  { name: "Networking & Infrastructure", slug: "networking", order: 8,
+    shortDescription: "Secure, resilient networks — from office LANs and Wi-Fi to cloud connectivity, VPNs, and round-the-clock monitoring.",
+    description: "We design, deploy, and manage the networks your systems run on — wired and wireless LANs, secure site-to-site and cloud connectivity, and the monitoring that keeps them reliable as you grow.",
+    capabilities: ["Network design & architecture", "LAN, WAN & enterprise Wi-Fi", "Firewalls & network security", "VPN & zero-trust remote access"],
+    technologies: ["Cisco", "Ubiquiti", "Fortinet", "WireGuard"] },
+  { name: "Internet of Things (IoT)", slug: "iot", order: 9,
+    shortDescription: "Connected devices, sensors, and gateways that stream real-world data into dashboards, alerts, and AI models.",
+    description: "We build end-to-end IoT systems — sensor and device integration, edge gateways, secure device-to-cloud messaging, and the dashboards and analytics that turn physical signals into decisions.",
+    capabilities: ["Sensor & device integration", "Edge gateways & edge computing", "MQTT & device-to-cloud messaging", "Device provisioning & OTA updates"],
+    technologies: ["ESP32", "MQTT", "AWS IoT Core", "Node-RED"] },
 ];
 
 const insights = [

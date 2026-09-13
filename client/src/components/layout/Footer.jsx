@@ -27,6 +27,8 @@ const columns = [
       { label: "Data Engineering", to: "/services/data-engineering" },
       { label: "MLOps", to: "/services/mlops" },
       { label: "Predictive Analytics", to: "/services/predictive-analytics" },
+      { label: "Networking", to: "/services/networking" },
+      { label: "Internet of Things", to: "/services/iot" },
     ],
   },
   {

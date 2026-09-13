@@ -6,6 +6,8 @@ const capabilities = [
   "MLOps",
   "Predictive Analytics",
   "Custom Software",
+  "Networking",
+  "Internet of Things",
   "LLM Applications",
 ];
 

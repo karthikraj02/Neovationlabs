@@ -8,6 +8,8 @@ const projectTypes = [
   "Data Engineering",
   "MLOps",
   "Predictive Analytics",
+  "Networking",
+  "Internet of Things",
   "Other",
 ];
 

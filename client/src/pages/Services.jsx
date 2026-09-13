@@ -23,7 +23,7 @@ const fallback = staticServices.map((s) => ({
 export default function ServicesPage() {
   usePageMeta(
     "Services",
-    "Generative AI, custom software, computer vision, agentic workflows, data engineering, MLOps, and predictive analytics."
+    "Generative AI, custom software, computer vision, agentic workflows, data engineering, MLOps, predictive analytics, networking, and IoT."
   );
   const { status, data, usedFallback, retry } = useApiResource(fetchServices, { fallback });
 
@@ -31,7 +31,7 @@ export default function ServicesPage() {
     <>
       <PageHero
         eyebrow="Services"
-        title="Seven disciplines. One production standard."
+        title="Nine disciplines. One production standard."
         description="Every engagement draws from the same set of capabilities — combined differently depending on what the problem actually needs."
       />
 
@@ -65,7 +65,7 @@ export default function ServicesPage() {
           )}
 
           {status === "success" && data.length > 0 && (
-            <AnimatedGrid cols="md:grid-cols-2">
+            <AnimatedGrid cols="md:grid-cols-2 lg:grid-cols-3">
               {data.map((service, i) => (
                 <Link key={service.slug} to={`/services/${service.slug}`}>
                   <GlowCard className="h-full">

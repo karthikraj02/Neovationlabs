@@ -17,6 +17,8 @@ const contactSubmissionSchema = new mongoose.Schema(
         "Data Engineering",
         "MLOps",
         "Predictive Analytics",
+        "Networking",
+        "Internet of Things",
         "Other",
       ],
     },
