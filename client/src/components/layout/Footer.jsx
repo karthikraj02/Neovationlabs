@@ -42,7 +42,7 @@ const columns = [
 ];
 
 const social = [
-  { icon: Users, href: "https://linkedin.com", label: "LinkedIn" },
+  { icon: Users, href: "https://www.linkedin.com/company/neovation-labs-in/", label: "LinkedIn" },
   { icon: InstagramIcon, href: "https://www.instagram.com/neovationlabs/", label: "Instagram" },
   { icon: Code2, href: "https://github.com", label: "GitHub" },
   { icon: AtSign, href: "https://x.com", label: "X" },
