@@ -1,20 +1,10 @@
 import Container from "../ui/Container";
 import SectionHeading from "../ui/SectionHeading";
-import FlowDiagram from "../ui/FlowDiagram";
-
-const steps = [
-  "User",
-  "Application",
-  "AI Layer",
-  "Agents / LLM",
-  "Data / Knowledge",
-  "Infrastructure",
-  "Business Systems",
-];
+import RequestJourney from "../ui/RequestJourney";
 
 export default function AIEngineering() {
   return (
-    <section className="border-t border-line bg-void py-24 md:py-32">
+    <section className="relative overflow-hidden border-t border-line bg-void py-24 md:py-32">
       <Container className="grid gap-14 md:grid-cols-2 md:items-center md:gap-10">
         <SectionHeading
           eyebrow="AI Engineering"
@@ -22,7 +12,10 @@ export default function AIEngineering() {
           description="A working demo is easy. A system that stays accurate, observable, and secure under real traffic is the actual engineering problem — and it's where we spend most of our time. Every layer, from the application down to infrastructure, is built to be monitored and maintained, not just shipped once."
         />
         <div>
-          <FlowDiagram steps={steps} />
+          <RequestJourney />
+          <p className="mt-4 text-center font-mono text-[10px] uppercase tracking-widest text-ink-faint">
+            Illustrative request path · every hop observed
+          </p>
         </div>
       </Container>
     </section>
