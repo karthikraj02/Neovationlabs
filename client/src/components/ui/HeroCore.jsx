@@ -2,15 +2,13 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotion } from "framer-motion";
 import { cn } from "../../lib/utils";
+import { readPalette, useTheme } from "../../lib/theme";
 
 const N = 150;
 const LINK = 0.44;
 const SIGNAL_EVERY = 2.1;
 const SIGNAL_LEN = 1.15;
 
-const TEAL = [94, 234, 212];
-const VIOLET = [139, 124, 246];
-const mixc = (t) => VIOLET.map((v, i) => Math.round(v + (TEAL[i] - v) * t));
 
 /* ------------------------------ capability chips ------------------------------ */
 
@@ -32,7 +30,7 @@ function GenAIVisual() {
 function VisionVisual() {
   return (
     <div className="relative mt-2 h-[22px] overflow-hidden rounded-[3px] border border-signal/35">
-      <div className="hc-scan absolute inset-x-0 h-px bg-signal shadow-[0_0_6px_rgba(94,234,212,0.9)]" />
+      <div className="hc-scan absolute inset-x-0 h-px bg-signal shadow-[0_0_6px_rgb(var(--signal-rgb)/0.9)]" />
       <span className="absolute left-1 top-1 h-1.5 w-1.5 border-l border-t border-signal/70" />
       <span className="absolute bottom-1 right-1 h-1.5 w-1.5 border-b border-r border-signal/70" />
     </div>
@@ -60,7 +58,7 @@ function AgentVisual() {
       {[0, 1, 2].map((n) => (
         <span key={n} className="relative h-2 w-2 rounded-full border border-signal/70 bg-void" />
       ))}
-      <span className="hc-flow absolute top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-signal shadow-[0_0_6px_rgba(94,234,212,1)]" />
+      <span className="hc-flow absolute top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-signal shadow-[0_0_6px_rgb(var(--signal-rgb)/1)]" />
     </div>
   );
 }
@@ -79,6 +77,7 @@ export default function HeroCore() {
   const canvasRef = useRef(null);
   const chipRefs = useRef([]);
   const reduceMotion = useReducedMotion();
+  const [theme] = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -86,6 +85,13 @@ export default function HeroCore() {
     if (!canvas || !wrap) return undefined;
     const ctx = canvas.getContext("2d");
     if (!ctx) return undefined;
+
+    // Canvas can't use CSS variables, so read the active theme's palette once per (re)start.
+    const pal = readPalette();
+    const SIG = pal.signal.join(",");
+    const PUL = pal.pulse.join(",");
+    const BEAD = pal.bead.join(",");
+    const mixc = (t) => pal.pulse.map((v, i) => Math.round(v + (pal.signal[i] - v) * t));
 
     let W = 0;
     let H = 0;
@@ -165,7 +171,7 @@ export default function HeroCore() {
 
     const ring = (rx, ry, rot, a0, a1, alpha, dash) => {
       ctx.save();
-      ctx.strokeStyle = `rgba(94,234,212,${alpha})`;
+      ctx.strokeStyle = `rgba(${SIG},${alpha})`;
       ctx.lineWidth = 1;
       ctx.setLineDash(dash);
       ctx.beginPath();
@@ -200,9 +206,9 @@ export default function HeroCore() {
       // breathing core glow
       const breathe = 0.5 + 0.5 * Math.sin(time * 1.4);
       const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.6);
-      g.addColorStop(0, `rgba(94,234,212,${0.2 + breathe * 0.1})`);
-      g.addColorStop(0.35, "rgba(139,124,246,0.10)");
-      g.addColorStop(1, "rgba(94,234,212,0)");
+      g.addColorStop(0, `rgba(${SIG},${0.2 + breathe * 0.1})`);
+      g.addColorStop(0.35, `rgba(${PUL},0.10)`);
+      g.addColorStop(1, `rgba(${SIG},0)`);
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, W, H);
 
@@ -258,8 +264,8 @@ export default function HeroCore() {
         const tx = sx[p.a] + (sx[p.b] - sx[p.a]) * Math.max(0, p.t - 0.35);
         const ty = sy[p.a] + (sy[p.b] - sy[p.a]) * Math.max(0, p.t - 0.35);
         const tg = ctx.createLinearGradient(tx, ty, x, y);
-        tg.addColorStop(0, "rgba(94,234,212,0)");
-        tg.addColorStop(1, `rgba(94,234,212,${0.35 + d * 0.6})`);
+        tg.addColorStop(0, `rgba(${SIG},0)`);
+        tg.addColorStop(1, `rgba(${SIG},${0.35 + d * 0.6})`);
         ctx.strokeStyle = tg;
         ctx.lineWidth = 1.6;
         ctx.beginPath();
@@ -276,7 +282,7 @@ export default function HeroCore() {
         const size = 1 + d * 1.7 + gl * 1.8;
         ctx.fillStyle = `rgba(${r},${gg},${b},${0.3 + d * 0.6 + gl * 0.3})`;
         if (gl > 0.05) {
-          ctx.shadowColor = "rgba(94,234,212,0.95)";
+          ctx.shadowColor = `rgba(${SIG},0.95)`;
           ctx.shadowBlur = 10 * gl;
         }
         ctx.beginPath();
@@ -293,8 +299,8 @@ export default function HeroCore() {
         [R * 1.24, R * 0.34, 0.55, -time * 0.8 + 2, 2.6],
       ].forEach(([rx, ry, rot, a, s]) => {
         const [x, y] = ringPoint(rx, ry, rot, a);
-        ctx.fillStyle = "#ffffff";
-        ctx.shadowColor = "rgba(94,234,212,1)";
+        ctx.fillStyle = `rgb(${BEAD})`;
+        ctx.shadowColor = `rgba(${SIG},1)`;
         ctx.shadowBlur = 12;
         ctx.beginPath();
         ctx.arc(x, y, s, 0, Math.PI * 2);
@@ -323,7 +329,7 @@ export default function HeroCore() {
         const e = 1 - Math.pow(1 - p, 3);
 
         // faint guide
-        ctx.strokeStyle = `rgba(94,234,212,${0.16 * Math.sin(Math.PI * p)})`;
+        ctx.strokeStyle = `rgba(${SIG},${0.16 * Math.sin(Math.PI * p)})`;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(cx, cy);
@@ -334,14 +340,14 @@ export default function HeroCore() {
         for (let s = 0; s < 14; s += 1) {
           const q = Math.max(0, e - s * 0.018);
           const [x, y] = bez(q, ax, ay, kx, ky);
-          ctx.fillStyle = `rgba(94,234,212,${(1 - s / 14) * 0.7})`;
+          ctx.fillStyle = `rgba(${SIG},${(1 - s / 14) * 0.7})`;
           ctx.beginPath();
           ctx.arc(x, y, 3.2 - s * 0.18, 0, Math.PI * 2);
           ctx.fill();
         }
         const [hx, hy] = bez(e, ax, ay, kx, ky);
-        ctx.fillStyle = "#ffffff";
-        ctx.shadowColor = "rgba(94,234,212,1)";
+        ctx.fillStyle = `rgb(${BEAD})`;
+        ctx.shadowColor = `rgba(${SIG},1)`;
         ctx.shadowBlur = 14;
         ctx.beginPath();
         ctx.arc(hx, hy, 3.4, 0, Math.PI * 2);
@@ -361,8 +367,8 @@ export default function HeroCore() {
           shown[k] = f;
           const el = chipRefs.current[k];
           if (el) {
-            el.style.borderColor = `rgba(94,234,212,${0.16 + f * 0.8})`;
-            el.style.boxShadow = f > 0.02 ? `0 0 ${Math.round(6 + f * 30)}px rgba(94,234,212,${f * 0.35})` : "none";
+            el.style.borderColor = `rgb(var(--signal-rgb)/${0.16 + f * 0.8})`;
+            el.style.boxShadow = f > 0.02 ? `0 0 ${Math.round(6 + f * 30)}px rgb(var(--signal-rgb)/${f * 0.35})` : "none";
           }
         }
       }
@@ -386,7 +392,7 @@ export default function HeroCore() {
       io.disconnect();
       window.removeEventListener("pointermove", onMove);
     };
-  }, [reduceMotion]);
+  }, [reduceMotion, theme]);
 
   return (
     <div

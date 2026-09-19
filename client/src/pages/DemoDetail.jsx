@@ -49,7 +49,7 @@ export default function DemoDetail() {
           <div className="mt-6 flex flex-wrap items-center gap-4">
             <Link
               to={`/book-demo?demo=${demo.slug}`}
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-void transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(94,234,212,0.35)]"
+              className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-void transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgb(var(--signal-rgb)/0.35)]"
             >
               <Video size={16} aria-hidden="true" />
               Book a live demo of this

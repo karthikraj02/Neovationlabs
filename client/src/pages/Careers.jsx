@@ -59,7 +59,7 @@ export default function Careers() {
             </p>
             <a
               href={`mailto:${CAREERS_EMAIL}?subject=${encodeURIComponent("Careers — application")}`}
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-void transition-shadow duration-300 hover:shadow-[0_0_24px_rgba(94,234,212,0.35)]"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-void transition-shadow duration-300 hover:shadow-[0_0_24px_rgb(var(--signal-rgb)/0.35)]"
             >
               <Mail size={15} />
               {CAREERS_EMAIL}

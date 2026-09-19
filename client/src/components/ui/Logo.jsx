@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 export default function Logo({ className = "h-7 w-7", mono = false }) {
-  const accent = mono ? "currentColor" : "#5eead4";
+  const accent = mono ? "currentColor" : "var(--color-signal)";
   return (
     <svg
       viewBox="0 0 32 32"

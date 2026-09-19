@@ -92,7 +92,7 @@ export default function LayeredStack() {
       role="img"
       aria-label="Isometric diagram of a full-stack architecture: frontend, API, backend, AI and ML, database, and infrastructure layers"
     >
-      <div className="absolute inset-0 -z-0 bg-[radial-gradient(ellipse_at_40%_50%,rgba(94,234,212,0.08),transparent_65%)]" />
+      <div className="absolute inset-0 -z-0 bg-[radial-gradient(ellipse_at_40%_50%,rgb(var(--signal-rgb)/0.08),transparent_65%)]" />
 
       {/* 3D stack */}
       <div
@@ -130,8 +130,8 @@ export default function LayeredStack() {
                 className={cn(
                   "absolute left-1/2 top-1/2 -ml-[75px] -mt-[75px] h-[150px] w-[150px] rounded-2xl border sm:-ml-[90px] sm:-mt-[90px] sm:h-[180px] sm:w-[180px]",
                   on
-                    ? "border-signal bg-[rgba(12,32,30,0.88)] text-signal shadow-[0_0_46px_rgba(94,234,212,0.35)]"
-                    : "border-line bg-[rgba(16,19,26,0.82)] text-ink-faint"
+                    ? "border-signal bg-[color-mix(in_srgb,var(--color-signal)_14%,var(--color-surface))] text-signal shadow-[0_0_46px_rgb(var(--signal-rgb)/0.35)]"
+                    : "border-line bg-surface/90 text-ink-faint"
                 )}
                 style={{
                   transform: `translateZ(${z}px)`,

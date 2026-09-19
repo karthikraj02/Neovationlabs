@@ -15,7 +15,7 @@ export default function GlowCard({ children, className, as: Tag = "div", ...prop
         className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
         style={{
           background:
-            "radial-gradient(320px circle at var(--x,50%) var(--y,0%), rgba(94,234,212,0.10), transparent 60%)",
+            "radial-gradient(320px circle at var(--x,50%) var(--y,0%), rgb(var(--signal-rgb)/0.10), transparent 60%)",
         }}
         onMouseMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();

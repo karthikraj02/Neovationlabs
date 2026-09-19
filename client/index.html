@@ -13,7 +13,20 @@
     <link rel="author" href="https://beautiful-alpaca-6b1495.netlify.app/" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#06070a" />
+    <meta name="theme-color" content="#ffffff" />
+    <script>
+      /* Apply the saved theme before first paint so there is no flash.
+         Light is the default; only an explicit "dark" choice switches it. */
+      (function () {
+        var theme = "light";
+        try {
+          if (localStorage.getItem("nl-theme") === "dark") theme = "dark";
+        } catch (e) {}
+        document.documentElement.setAttribute("data-theme", theme);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", theme === "dark" ? "#06070a" : "#ffffff");
+      })();
+    </script>
     <title>NeovationLabs | AI Engineering & Intelligent Software</title>
     <meta name="description" content="NeovationLabs builds AI-powered software, intelligent data infrastructure, autonomous workflows, and production-ready machine learning systems." />
     <meta property="og:title" content="NeovationLabs | AI Engineering & Intelligent Software" />

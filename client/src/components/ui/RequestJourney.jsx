@@ -138,18 +138,18 @@ export default function RequestJourney() {
       role="img"
       aria-label="A request travelling through seven stages: user, application, AI layer, agents and LLM, data and knowledge, infrastructure, and business systems"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-1/2 h-3/4 -translate-y-1/2 bg-[radial-gradient(ellipse_at_center,rgba(94,234,212,0.07),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-1/2 h-3/4 -translate-y-1/2 bg-[radial-gradient(ellipse_at_center,rgb(var(--signal-rgb)/0.07),transparent_70%)]" />
 
       {w > 0 && (
         <svg width={w} height={H} viewBox={`0 0 ${w} ${H}`} className="absolute inset-0" aria-hidden="true">
           <defs>
             <linearGradient id="journey-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2={H}>
-              <stop offset="0%" stopColor="#5eead4" />
-              <stop offset="100%" stopColor="#8b7cf6" />
+              <stop offset="0%" stopColor="var(--color-signal)" />
+              <stop offset="100%" stopColor="var(--color-pulse)" />
             </linearGradient>
           </defs>
 
-          <path ref={pathRef} d={d} fill="none" stroke="#1c202b" strokeWidth="2" strokeDasharray="2 6" strokeLinecap="round" />
+          <path ref={pathRef} d={d} fill="none" stroke="var(--color-line)" strokeWidth="2" strokeDasharray="2 6" strokeLinecap="round" />
           <path
             ref={litRef}
             d={d}
@@ -158,27 +158,27 @@ export default function RequestJourney() {
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeDasharray={`0 ${H * 10}`}
-            style={{ filter: "drop-shadow(0 0 5px rgba(94,234,212,0.55))" }}
+            style={{ filter: "drop-shadow(0 0 5px rgb(var(--signal-rgb)/0.55))" }}
           />
           <path
             ref={tailRef}
             d={d}
             fill="none"
-            stroke="#ffffff"
+            stroke="rgb(var(--bead-rgb))"
             strokeOpacity="0.9"
             strokeWidth="3.5"
             strokeLinecap="round"
             strokeDasharray={`0 ${H * 10}`}
             opacity="0"
-            style={{ filter: "drop-shadow(0 0 6px rgba(94,234,212,1))" }}
+            style={{ filter: "drop-shadow(0 0 6px rgb(var(--signal-rgb)/1))" }}
           />
-          <circle ref={haloRef} r="11" fill="rgba(94,234,212,0.22)" opacity="0" />
+          <circle ref={haloRef} r="11" fill="rgb(var(--signal-rgb)/0.22)" opacity="0" />
           <circle
             ref={dotRef}
             r="4.5"
-            fill="#ffffff"
+            fill="rgb(var(--bead-rgb))"
             opacity="0"
-            style={{ filter: "drop-shadow(0 0 8px rgba(94,234,212,1))" }}
+            style={{ filter: "drop-shadow(0 0 8px rgb(var(--signal-rgb)/1))" }}
           />
         </svg>
       )}
@@ -193,7 +193,7 @@ export default function RequestJourney() {
               className={cn(
                 "absolute flex items-center gap-3 rounded-xl border px-3 backdrop-blur",
                 on
-                  ? "border-signal bg-[rgba(12,32,30,0.92)] shadow-[0_0_34px_rgba(94,234,212,0.28)]"
+                  ? "border-signal bg-[color-mix(in_srgb,var(--color-signal)_14%,var(--color-surface))] shadow-[0_0_34px_rgb(var(--signal-rgb)/0.28)]"
                   : done
                     ? "border-signal-dim bg-surface"
                     : "border-line bg-surface"

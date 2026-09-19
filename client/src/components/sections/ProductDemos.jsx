@@ -90,7 +90,7 @@ export default function ProductDemos() {
               <div className="mt-5 flex flex-wrap items-center gap-4">
                 <Link
                   to={`/book-demo?demo=${active.slug}`}
-                  className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium text-ink transition-all duration-300 hover:border-signal-dim hover:shadow-[0_0_20px_rgba(94,234,212,0.15)]"
+                  className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium text-ink transition-all duration-300 hover:border-signal-dim hover:shadow-[0_0_20px_rgb(var(--signal-rgb)/0.15)]"
                 >
                   <Video size={15} className="text-signal" aria-hidden="true" />
                   Book a live demo

@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { readPalette, useTheme } from "../../lib/theme";
 
 const sources = ["CRM", "ERP", "APIs", "Databases", "Files", "Streams"];
 const stages = [
@@ -14,8 +15,6 @@ const stages = [
 
 const N = stages.length;
 const GRAY = [91, 97, 120];
-const VIOLET = [139, 124, 246];
-const TEAL = [94, 234, 212];
 
 const lerp = (a, b, t) => a + (b - a) * t;
 const smooth = (a, b, x) => {
@@ -23,8 +22,8 @@ const smooth = (a, b, x) => {
   return t * t * (3 - 2 * t);
 };
 const mix = (a, b, t) => a.map((v, i) => Math.round(lerp(v, b[i], t)));
-const colorAt = (t) =>
-  t < 0.4 ? mix(GRAY, VIOLET, smooth(0.05, 0.4, t)) : mix(VIOLET, TEAL, smooth(0.4, 0.85, t));
+const colorAt = (t, pal) =>
+  t < 0.4 ? mix(GRAY, pal.pulse, smooth(0.05, 0.4, t)) : mix(pal.pulse, pal.signal, smooth(0.4, 0.85, t));
 const gate = (i) => (i + 0.5) / N;
 
 const newParticle = (t = 0.01) => ({
@@ -40,12 +39,17 @@ export default function DataPipeline() {
   const canvasRef = useRef(null);
   const stageRefs = useRef([]);
   const inView = useInView(wrapRef, { margin: "80px" });
+  const [theme] = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !inView) return undefined;
     const ctx = canvas.getContext("2d");
     if (!ctx) return undefined;
+
+    // Canvas can't use CSS variables, so read the active theme's palette once per (re)start.
+    const pal = readPalette();
+    const SIG = pal.signal.join(",");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let W = 0;
@@ -81,8 +85,8 @@ export default function DataPipeline() {
       // ordered lanes, fading in once data has been structured
       for (let k = -2; k <= 2; k += 1) {
         const grad = ctx.createLinearGradient(W * 0.38, 0, W * 0.98, 0);
-        grad.addColorStop(0, "rgba(94,234,212,0)");
-        grad.addColorStop(1, "rgba(94,234,212,0.10)");
+        grad.addColorStop(0, `rgba(${SIG},0)`);
+        grad.addColorStop(1, `rgba(${SIG},0.10)`);
         ctx.strokeStyle = grad;
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -101,9 +105,9 @@ export default function DataPipeline() {
         flash[i] = Math.max(0, flash[i] - dt * 3.4);
         const gx = gate(i) * W;
         const a = 0.14 + flash[i] * 0.8;
-        ctx.strokeStyle = `rgba(94,234,212,${a})`;
+        ctx.strokeStyle = `rgba(${SIG},${a})`;
         ctx.lineWidth = 1 + flash[i] * 1.5;
-        ctx.shadowColor = "rgba(94,234,212,0.9)";
+        ctx.shadowColor = `rgba(${SIG},0.9)`;
         ctx.shadowBlur = flash[i] * 14;
         ctx.setLineDash([3, 5]);
         ctx.beginPath();
@@ -118,9 +122,9 @@ export default function DataPipeline() {
           shown[i] = f;
           const el = stageRefs.current[i];
           if (el) {
-            el.style.borderColor = `rgba(94,234,212,${0.14 + f * 0.75})`;
-            el.style.backgroundColor = `rgba(94,234,212,${f * 0.09})`;
-            el.style.boxShadow = f > 0.02 ? `0 0 ${Math.round(f * 26)}px rgba(94,234,212,${f * 0.28})` : "none";
+            el.style.borderColor = `rgb(var(--signal-rgb)/${0.14 + f * 0.75})`;
+            el.style.backgroundColor = `rgb(var(--signal-rgb)/${f * 0.09})`;
+            el.style.boxShadow = f > 0.02 ? `0 0 ${Math.round(f * 26)}px rgb(var(--signal-rgb)/${f * 0.28})` : "none";
           }
         }
       }
@@ -128,8 +132,8 @@ export default function DataPipeline() {
       // output glow on the right edge
       outGlow = Math.max(0, outGlow - dt * 1.6);
       const og = ctx.createRadialGradient(W, cy, 0, W, cy, H * 0.55);
-      og.addColorStop(0, `rgba(94,234,212,${0.1 + outGlow * 0.4})`);
-      og.addColorStop(1, "rgba(94,234,212,0)");
+      og.addColorStop(0, `rgba(${SIG},${0.1 + outGlow * 0.4})`);
+      og.addColorStop(1, `rgba(${SIG},0)`);
       ctx.fillStyle = og;
       ctx.fillRect(W - H * 0.6, 0, H * 0.6, H);
 
@@ -160,7 +164,7 @@ export default function DataPipeline() {
         const x = t * W;
         const y = cy + offE * amp * s + Math.sin(now / 280 + p.ph) * jit;
 
-        const [r, g, b] = colorAt(t);
+        const [r, g, b] = colorAt(t, pal);
         const size = 5 - 2.2 * smooth(0.1, 0.7, t);
         const alpha = Math.min(1, t * 12) * (t > 0.96 ? Math.max(0, (1.01 - t) / 0.05) : 1);
 
@@ -212,7 +216,7 @@ export default function DataPipeline() {
       cancelAnimationFrame(raf);
       ro.disconnect();
     };
-  }, [inView]);
+  }, [inView, theme]);
 
   return (
     <div ref={wrapRef} className="space-y-6">

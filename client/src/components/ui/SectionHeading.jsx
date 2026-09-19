@@ -28,7 +28,7 @@ export default function SectionHeading({
             align === "center" && "justify-center"
           )}
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-signal shadow-[0_0_8px_2px_rgba(94,234,212,0.6)]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-signal shadow-[0_0_8px_2px_rgb(var(--signal-rgb)/0.6)]" />
           {eyebrow}
         </motion.div>
       )}

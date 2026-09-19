@@ -8,7 +8,7 @@ const base =
 
 const variants = {
   primary:
-    "bg-ink text-void hover:shadow-[0_0_0_1px_rgba(94,234,212,0.4),0_0_24px_rgba(94,234,212,0.35)] hover:-translate-y-0.5",
+    "bg-ink text-void hover:shadow-[0_0_0_1px_rgb(var(--signal-rgb)/0.4),0_0_24px_rgb(var(--signal-rgb)/0.35)] hover:-translate-y-0.5",
   secondary:
     "border border-line text-ink hover:border-ink-faint hover:bg-surface-raised hover:-translate-y-0.5",
   ghost: "text-ink-dim hover:text-ink",

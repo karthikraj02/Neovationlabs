@@ -107,7 +107,7 @@ export default function VisitorsChart({ data }) {
 
               {hovered && (
                 <div
-                  className="pointer-events-none absolute top-0 z-10 rounded-lg border border-line bg-surface-raised px-3 py-2 shadow-lg shadow-black/40"
+                  className="pointer-events-none absolute top-0 z-10 rounded-lg border border-line bg-surface-raised px-3 py-2 shadow-[0_8px_24px_rgb(var(--ink-rgb)/0.18)]"
                   style={{
                     left: `${((active + 0.5) / n) * 100}%`,
                     transform: `translateX(${active < n * 0.2 ? "-10%" : active > n * 0.8 ? "-90%" : "-50%"})`,

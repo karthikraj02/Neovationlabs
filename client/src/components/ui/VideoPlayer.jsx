@@ -57,7 +57,7 @@ export default function VideoPlayer({
           aria-label={`Play demo: ${title}`}
           className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-void/45 transition-colors duration-500 hover:bg-void/25"
         >
-          <span className="flex h-16 w-16 items-center justify-center rounded-full border border-signal-dim bg-void/80 text-signal backdrop-blur transition-all duration-500 group-hover:scale-105 group-hover:shadow-[0_0_28px_rgba(94,234,212,0.35)]">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full border border-signal-dim bg-void/80 text-signal backdrop-blur transition-all duration-500 group-hover:scale-105 group-hover:shadow-[0_0_28px_rgb(var(--signal-rgb)/0.35)]">
             <Play size={22} className="ml-0.5" fill="currentColor" />
           </span>
           {(label || duration) && (

@@ -64,7 +64,7 @@ function LLMPanel({ tick }) {
                 key={j}
                 d={`M ${x1} 34 Q ${(x1 + x2) / 2} ${34 - lift * 1.6} ${x2} 34`}
                 fill="none"
-                stroke={w > 0.5 ? "#5eead4" : "#8b7cf6"}
+                stroke={w > 0.5 ? "var(--color-signal)" : "var(--color-pulse)"}
                 strokeOpacity={0.15 + w * 0.85}
                 strokeWidth={1 + w * 1.6}
                 vectorEffect="non-scaling-stroke"
@@ -81,7 +81,7 @@ function LLMPanel({ tick }) {
                 className={cn(
                   "rounded-md border px-1.5 py-1 font-mono text-[10px] transition-all duration-500 sm:px-2 sm:text-xs",
                   i === active
-                    ? "border-signal bg-signal text-void shadow-[0_0_20px_rgba(94,234,212,0.45)]"
+                    ? "border-signal bg-signal text-void shadow-[0_0_20px_rgb(var(--signal-rgb)/0.45)]"
                     : "border-line bg-surface-raised text-ink-dim"
                 )}
               >
@@ -157,7 +157,7 @@ function CNNPanel({ tick }) {
   const kr = Math.floor(k / KPOS);
   const kc = k % KPOS;
   const on = (i) => stage >= i;
-  const lit = (i) => (stage === i ? "#5eead4" : on(i) ? "#2f6e63" : "#1c202b");
+  const lit = (i) => (stage === i ? "var(--color-signal)" : on(i) ? "var(--color-signal-dim)" : "var(--color-line)");
 
   const stack = (x, y, size, count, layer) =>
     Array.from({ length: count }).map((_, n) => (
@@ -168,7 +168,7 @@ function CNNPanel({ tick }) {
         width={size}
         height={size}
         rx="3"
-        fill={stage === layer ? "rgba(94,234,212,0.10)" : "rgba(255,255,255,0.02)"}
+        fill={stage === layer ? "rgb(var(--signal-rgb)/0.10)" : "rgb(var(--ink-rgb)/0.03)"}
         stroke={lit(layer)}
         strokeWidth="1"
         style={{ transition: "all 0.4s" }}
@@ -196,7 +196,7 @@ function CNNPanel({ tick }) {
             y1={y1}
             x2={x2}
             y2={y2}
-            stroke={stage >= l ? "#5eead4" : "#1c202b"}
+            stroke={stage >= l ? "var(--color-signal)" : "var(--color-line)"}
             strokeWidth="1"
             strokeDasharray="3 3"
             style={{ transition: "stroke 0.4s" }}
@@ -213,7 +213,7 @@ function CNNPanel({ tick }) {
               width={CELL - 1}
               height={CELL - 1}
               rx="1.5"
-              fill={`rgba(94,234,212,${0.05 + pixel(r, c) * 0.6})`}
+              fill={`rgb(var(--signal-rgb)/${0.05 + pixel(r, c) * 0.6})`}
             />
           ))
         )}
@@ -223,8 +223,8 @@ function CNNPanel({ tick }) {
           width={KERNEL * CELL + 1}
           height={KERNEL * CELL + 1}
           rx="3"
-          fill="rgba(139,124,246,0.15)"
-          stroke="#8b7cf6"
+          fill="rgb(var(--pulse-rgb)/0.15)"
+          stroke="var(--color-pulse)"
           strokeWidth="1.5"
           style={{ transition: "all 0.35s ease" }}
         />
@@ -241,7 +241,7 @@ function CNNPanel({ tick }) {
             cx={384}
             cy={54 + n * 15}
             r="4"
-            fill={stage === 4 ? "#5eead4" : on(4) ? "#2f6e63" : "#10131a"}
+            fill={stage === 4 ? "var(--color-signal)" : on(4) ? "var(--color-signal-dim)" : "var(--color-surface-raised)"}
             stroke={lit(4)}
             style={{ transition: "all 0.4s" }}
           />
@@ -250,17 +250,17 @@ function CNNPanel({ tick }) {
         {/* output */}
         {outputs.map(([label, p], n) => (
           <g key={label}>
-            <rect x={424} y={62 + n * 18} width={46} height={7} rx="3.5" fill="#14161f" />
+            <rect x={424} y={62 + n * 18} width={46} height={7} rx="3.5" fill="var(--color-line-soft)" />
             <rect
               x={424}
               y={62 + n * 18}
               width={on(5) ? 46 * p : 0}
               height={7}
               rx="3.5"
-              fill={n === 0 ? "#5eead4" : "#5b6178"}
+              fill={n === 0 ? "var(--color-signal)" : "var(--color-ink-faint)"}
               style={{ transition: "width 0.6s ease" }}
             />
-            <text x={424} y={58 + n * 18} fontSize="7.5" fill="#9aa1b2" fontFamily="IBM Plex Mono, monospace">
+            <text x={424} y={58 + n * 18} fontSize="7.5" fill="var(--color-ink-dim)" fontFamily="IBM Plex Mono, monospace">
               {label}
             </text>
           </g>
@@ -274,7 +274,7 @@ function CNNPanel({ tick }) {
             y={172}
             fontSize="8"
             letterSpacing="1"
-            fill={stage === i ? "#5eead4" : "#5b6178"}
+            fill={stage === i ? "var(--color-signal)" : "var(--color-ink-faint)"}
             fontFamily="IBM Plex Mono, monospace"
             style={{ transition: "fill 0.4s", textTransform: "uppercase" }}
           >
@@ -325,7 +325,7 @@ export default function NeuralModels() {
 
   return (
     <div className="relative">
-      <div className="absolute -inset-6 rounded-[2rem] bg-[radial-gradient(ellipse_at_center,rgba(94,234,212,0.10),rgba(139,124,246,0.06)_50%,transparent_75%)] blur-2xl" />
+      <div className="absolute -inset-6 rounded-[2rem] bg-[radial-gradient(ellipse_at_center,rgb(var(--signal-rgb)/0.10),rgb(var(--pulse-rgb)/0.06)_50%,transparent_75%)] blur-2xl" />
 
       <div className="relative overflow-hidden rounded-2xl border border-line bg-void/80 backdrop-blur">
         <div className="flex items-center gap-2 border-b border-line p-2">
@@ -340,7 +340,7 @@ export default function NeuralModels() {
               className={cn(
                 "flex flex-1 items-baseline justify-center gap-2 rounded-lg px-3 py-2 font-mono text-xs uppercase tracking-widest transition-colors",
                 tab === t.id
-                  ? "bg-signal/10 text-signal shadow-[inset_0_0_0_1px_rgba(94,234,212,0.35)]"
+                  ? "bg-signal/10 text-signal shadow-[inset_0_0_0_1px_rgb(var(--signal-rgb)/0.35)]"
                   : "text-ink-faint hover:text-ink-dim"
               )}
             >
