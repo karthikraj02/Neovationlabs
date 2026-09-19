@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import Button from "../ui/Button";
 import Container from "../ui/Container";
-import LLMVisual from "../ui/LLMVisual";
+import HeroCore from "../ui/HeroCore";
 
 export default function Hero() {
   return (
@@ -61,9 +61,9 @@ export default function Hero() {
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="relative mx-auto w-full max-w-md"
+          className="relative mx-auto w-full max-w-[30rem]"
         >
-          <LLMVisual />
+          <HeroCore />
         </motion.div>
       </Container>
 

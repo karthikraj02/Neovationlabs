@@ -136,6 +136,65 @@ body {
   animation: chip-emit 3.6s ease-in-out infinite;
 }
 
+@keyframes hc-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes hc-line {
+  0% {
+    transform: scaleX(0);
+  }
+  40%, 80% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}
+@keyframes hc-bar {
+  0%, 100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+@keyframes hc-scan {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: calc(100% - 1px);
+  }
+}
+@keyframes hc-flow {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: calc(100% - 6px);
+  }
+}
+.hc-float {
+  animation: hc-float 6s ease-in-out infinite;
+}
+.hc-line {
+  animation: hc-line 3.2s ease-in-out infinite;
+}
+.hc-bar {
+  animation: hc-bar 1.6s ease-in-out infinite;
+}
+.hc-scan {
+  animation: hc-scan 1.8s ease-in-out infinite alternate;
+}
+.hc-flow {
+  animation: hc-flow 1.6s ease-in-out infinite alternate;
+}
+
 .text-balance {
   text-wrap: balance;
 }
