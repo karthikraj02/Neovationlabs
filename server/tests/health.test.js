@@ -6,7 +6,13 @@ describe("GET /api/health", () => {
   it("returns service status ok", async () => {
     const res = await request(app).get("/api/health");
     expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual({ status: "ok", service: "neovationlabs-api" });
+    expect(res.body).toMatchObject({ status: "ok", service: "neovationlabs-api" });
+  });
+
+  it("says plainly that the database is not configured when there is no MONGODB_URI", async () => {
+    const res = await request(app).get("/api/health");
+    expect(res.body.database.status).toBe("not-configured");
+    expect(res.body.database.hint).toMatch(/MONGODB_URI/);
   });
 });
 

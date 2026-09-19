@@ -142,7 +142,7 @@ npm run dev:server
 
 | Method | Route | Description |
 |---|---|---|
-| `GET` | `/api/health` | Health check — `{ status: "ok", service: "neovationlabs-api" }` |
+| `GET` | `/api/health` | Health check. Returns `status: "ok"` plus a `database` section saying whether MongoDB is connected and, if not, why in plain words (no secrets), e.g. `not-configured`, `authentication-failed`, `cluster-unreachable-or-blocked`. Add `?db=1` to make a live connection attempt first (can take ~8 s if the database is unreachable). |
 | `POST` | `/api/contact` | Submit a project inquiry. Rate-limited (5 / 15 min per IP). Validates and sanitizes input, saves to MongoDB, sends an email notification if SMTP is configured. |
 | `POST` | `/api/demo-bookings` | Request a live Google Meet demo. Same rate limit, validation, sanitizing, and email-notification path as `/api/contact`. |
 | `GET` | `/api/services` | List services (from MongoDB, if seeded) |

@@ -5,9 +5,10 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const mongoSanitize = require("./middleware/sanitizeBody");
 
-const { clientOrigins, nodeEnv } = require("./config/env");
+const { clientOrigins, nodeEnv, mongodbUri } = require("./config/env");
+const { connectDB } = require("./config/db");
 const { generalLimiter } = require("./middleware/rateLimiters");
-const { notFoundHandler, errorHandler } = require("./middleware/errorHandler");
+const { ApiError, notFoundHandler, errorHandler } = require("./middleware/errorHandler");
 
 const healthRoutes = require("./routes/healthRoutes");
 const contactRoutes = require("./routes/contactRoutes");
@@ -39,6 +40,24 @@ if (nodeEnv !== "test") {
 
 app.use(generalLimiter);
 
+// On serverless hosting the database connection is first attempted when the function
+// starts. If that one attempt fails (say Atlas had not yet allowed the host), the
+// instance used to stay broken for good. Now each request makes sure the connection
+// is up, retrying if it is not (several requests at once share one attempt), and
+// answers clearly and quickly if it still cannot connect, instead of each request
+// waiting out a 10-second buffer and failing. The health page is exempt so it can
+// always report. With no MONGODB_URI (local work and the tests) this does nothing.
+async function ensureDatabase(req, res, next) {
+  if (!mongodbUri || req.path.startsWith("/health")) return next();
+  try {
+    await connectDB();
+    return next();
+  } catch {
+    return next(new ApiError(503, "We're having trouble reaching our database. Please try again in a moment."));
+  }
+}
+
+app.use("/api", ensureDatabase);
 app.use("/api/health", healthRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/demo-bookings", demoBookingRoutes);
