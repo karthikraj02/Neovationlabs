@@ -1,9 +1,10 @@
 // Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { Link } from "react-router-dom";
-import { Code2, Users, AtSign, Mail } from "lucide-react";
+import { Code2, Users, AtSign, Mail, Phone } from "lucide-react";
 import Container from "../ui/Container";
 import Logo from "../ui/Logo";
 import InstagramIcon from "../ui/InstagramIcon";
+import WhatsAppIcon from "../ui/WhatsAppIcon";
 
 const columns = [
   {
@@ -42,6 +43,12 @@ const columns = [
   },
 ];
 
+// One number, written once. `tel:` needs the +country code with no spaces,
+// and wa.me needs the digits only (no +).
+const PHONE_DISPLAY = "+91 99017 23492";
+const PHONE_TEL = "tel:+919901723492";
+const WHATSAPP_URL = "https://wa.me/919901723492";
+
 const social = [
   { icon: Users, href: "https://www.linkedin.com/company/neovation-labs-in/", label: "LinkedIn" },
   { icon: InstagramIcon, href: "https://www.instagram.com/neovationlabs/", label: "Instagram" },
@@ -65,6 +72,33 @@ export default function Footer() {
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-dim">
               AI engineering for what's next.
             </p>
+
+            <div className="mt-6">
+              <div className="font-mono text-xs uppercase tracking-[0.15em] text-ink-faint">
+                Call or WhatsApp
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2.5">
+                <a
+                  href={PHONE_TEL}
+                  aria-label={`Call ${PHONE_DISPLAY}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-sm text-ink transition-colors duration-300 hover:border-signal-dim hover:text-signal"
+                >
+                  <Phone size={14} aria-hidden="true" />
+                  {PHONE_DISPLAY}
+                </a>
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Chat with us on WhatsApp at ${PHONE_DISPLAY}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-sm text-ink transition-colors duration-300 hover:border-signal-dim hover:text-signal"
+                >
+                  <WhatsAppIcon size={14} />
+                  WhatsApp
+                </a>
+              </div>
+            </div>
+
             <div className="mt-6 flex items-center gap-3">
               {social.map(({ icon: Icon, href, label }) => (
                 <a
