@@ -101,6 +101,7 @@ cp client/.env.example client/.env
 | `MONGODB_URI` | MongoDB Atlas / local connection string |
 | `CLIENT_URL` | Frontend origin, used for CORS |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASSWORD` | Optional — enables contact-form email notifications. If left blank, submissions still save to MongoDB, email is just skipped. |
+| `CALLMEBOT_API_KEY`, or `WHATSAPP_TOKEN` + `WHATSAPP_PHONE_NUMBER_ID` (+ `WHATSAPP_TEMPLATE`) | Optional — sends each new project request to the company WhatsApp number automatically. CallMeBot is the quick free option; the Meta Cloud API is the official one. Both blank = WhatsApp alerts off. See `server/.env.example`. |
 | `CONTACT_NOTIFY_EMAIL` | Optional — extra notification recipients, comma-separated. Emails always go to `neovationlabs@outlook.com` and `neovationlabs.official@gmail.com`; these are added to them, never replacing them. |
 
 **`client/.env`**

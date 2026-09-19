@@ -3,10 +3,15 @@ jest.mock("../src/models/ContactSubmission");
 jest.mock("../src/services/emailService", () => ({
   sendContactNotification: jest.fn().mockResolvedValue({ sent: false }),
 }));
+jest.mock("../src/services/whatsappService", () => ({
+  sendContactWhatsApp: jest.fn().mockResolvedValue({ sent: false }),
+}));
 
 const request = require("supertest");
 const app = require("../src/app");
 const ContactSubmission = require("../src/models/ContactSubmission");
+const { sendContactNotification } = require("../src/services/emailService");
+const { sendContactWhatsApp } = require("../src/services/whatsappService");
 
 const validPayload = {
   name: "Ada Lovelace",
@@ -30,6 +35,70 @@ describe("POST /api/contact", () => {
     expect(res.statusCode).toBe(201);
     expect(res.body.success).toBe(true);
     expect(ContactSubmission.create).toHaveBeenCalledTimes(1);
+  });
+
+  it("alerts the team by email and by WhatsApp with the saved details", async () => {
+    ContactSubmission.create.mockResolvedValue({ _id: "abc123" });
+
+    const res = await request(app).post("/api/contact").send(validPayload);
+
+    expect(res.statusCode).toBe(201);
+    expect(sendContactNotification).toHaveBeenCalledTimes(1);
+    expect(sendContactWhatsApp).toHaveBeenCalledTimes(1);
+    expect(sendContactWhatsApp.mock.calls[0][0]).toMatchObject({
+      name: "Ada Lovelace",
+      email: "ada@example.com",
+      projectType: "Generative AI",
+    });
+  });
+
+  it("still succeeds, and stays saved, when the WhatsApp and email alerts both fail", async () => {
+    ContactSubmission.create.mockResolvedValue({ _id: "abc123" });
+    sendContactNotification.mockRejectedValueOnce(new Error("smtp down"));
+    sendContactWhatsApp.mockRejectedValueOnce(new Error("whatsapp down"));
+    const error = jest.spyOn(console, "error").mockImplementation(() => {});
+
+    const res = await request(app).post("/api/contact").send(validPayload);
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.success).toBe(true);
+    expect(ContactSubmission.create).toHaveBeenCalledTimes(1);
+    expect(error).toHaveBeenCalledWith(expect.stringContaining("[whatsapp]"), "whatsapp down");
+    expect(error).toHaveBeenCalledWith(expect.stringContaining("[email]"), "smtp down");
+    error.mockRestore();
+  });
+
+  it("does not hold the visitor up when an alert provider never answers", async () => {
+    jest.useFakeTimers();
+    try {
+      ContactSubmission.create.mockResolvedValue({ _id: "abc123" });
+      sendContactWhatsApp.mockImplementationOnce(() => new Promise(() => {})); // hangs forever
+
+      // eslint-disable-next-line global-require
+      const { submitContact } = require("../src/controllers/contactController");
+      const req = { validatedBody: { ...validPayload, website: "" }, ip: "203.0.113.9" };
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+
+      const finished = submitContact(req, res, jest.fn());
+
+      await jest.advanceTimersByTimeAsync(7000);
+      expect(res.json).not.toHaveBeenCalled(); // still waiting, within the cap
+
+      await jest.advanceTimersByTimeAsync(1500);
+      await finished;
+      expect(res.status).toHaveBeenCalledWith(201); // gave up waiting and answered
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it("does not send any alert for a submission that fails validation", async () => {
+    const res = await request(app).post("/api/contact").send({ ...validPayload, email: "nope" });
+
+    expect(res.statusCode).toBe(400);
+    expect(sendContactNotification).not.toHaveBeenCalled();
+    expect(sendContactWhatsApp).not.toHaveBeenCalled();
   });
 
   it("does not require a budget", async () => {

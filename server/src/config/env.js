@@ -35,6 +35,13 @@ function notifyRecipients(extra) {
   });
 }
 
+// WhatsApp alerts. The number that receives them is the company WhatsApp number.
+// Two ways to send, picked by whichever credentials are present:
+//   - Meta WhatsApp Cloud API (official)  -> WHATSAPP_TOKEN + WHATSAPP_PHONE_NUMBER_ID
+//   - CallMeBot (free, for your own number) -> CALLMEBOT_API_KEY
+// With neither, WhatsApp alerts are simply off (email and the admin page still work).
+const digitsOnly = (value) => String(value || "").replace(/\D/g, "");
+
 module.exports = {
   port: process.env.PORT || 5000,
   nodeEnv: process.env.NODE_ENV || "development",
@@ -44,6 +51,21 @@ module.exports = {
   jwtSecret: process.env.JWT_SECRET || "",
   adminTokenTtl: process.env.ADMIN_TOKEN_TTL || "12h",
   analyticsTimezone: process.env.ANALYTICS_TIMEZONE || "Asia/Kolkata",
+  whatsapp: {
+    to: digitsOnly(process.env.WHATSAPP_TO) || "919901723492",
+    cloud: {
+      token: process.env.WHATSAPP_TOKEN || "",
+      phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID || "",
+      // A pre-approved message template. Needed for messages to a number that has
+      // not messaged the sender in the last 24 hours (which is the normal case).
+      template: process.env.WHATSAPP_TEMPLATE || "",
+      templateLanguage: process.env.WHATSAPP_TEMPLATE_LANGUAGE || "en",
+      apiVersion: process.env.WHATSAPP_API_VERSION || "v21.0",
+    },
+    callmebot: {
+      apiKey: process.env.CALLMEBOT_API_KEY || "",
+    },
+  },
   smtp: {
     host: process.env.SMTP_HOST || "",
     port: Number(process.env.SMTP_PORT) || 587,

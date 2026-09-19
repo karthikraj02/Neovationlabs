@@ -15,7 +15,8 @@ export default function Privacy() {
       <p>
         Information submitted through the contact form — name, company,
         email, phone, project type, and message — is stored to
-        respond to your inquiry.
+        respond to your inquiry. It is also sent to our team by email and
+        WhatsApp so we can reply quickly.
       </p>
       <h2>How we use it</h2>
       <p>
