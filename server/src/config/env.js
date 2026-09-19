@@ -76,6 +76,14 @@ module.exports = {
       apiKey: process.env.CALLMEBOT_API_KEY || "",
     },
   },
+  // Sending through Resend (https://resend.com), an HTTP email API. When
+  // RESEND_API_KEY is set it is used instead of SMTP.
+  email: {
+    resendApiKey: process.env.RESEND_API_KEY || "",
+    // onboarding@resend.dev works with no domain set up, but Resend then only
+    // delivers to the address your Resend account was created with.
+    from: (process.env.EMAIL_FROM || "").trim() || "onboarding@resend.dev",
+  },
   smtp: {
     host: process.env.SMTP_HOST || "",
     port: Number(process.env.SMTP_PORT) || 587,
