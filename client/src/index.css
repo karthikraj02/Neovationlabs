@@ -115,6 +115,27 @@ body {
   animation: stack-ripple 1.4s ease-out forwards;
 }
 
+@keyframes chip-emit {
+  0%, 100% {
+    border-color: var(--color-line);
+    color: var(--color-ink-dim);
+    box-shadow: 0 0 0 rgba(94, 234, 212, 0);
+  }
+  12% {
+    border-color: rgba(94, 234, 212, 0.6);
+    color: var(--color-ink);
+    box-shadow: 0 0 14px rgba(94, 234, 212, 0.25);
+  }
+  30% {
+    border-color: var(--color-line);
+    color: var(--color-ink-dim);
+    box-shadow: 0 0 0 rgba(94, 234, 212, 0);
+  }
+}
+.chip-emit {
+  animation: chip-emit 3.6s ease-in-out infinite;
+}
+
 .text-balance {
   text-wrap: balance;
 }
