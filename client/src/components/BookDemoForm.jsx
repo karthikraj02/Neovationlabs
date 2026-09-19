@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Loader2, CalendarCheck, AlertCircle, Video } from "lucide-react";
 import axios from "axios";
 import { demos } from "../data/demos";
+import { API_BASE } from "../lib/apiBase";
 
 // Must match server/src/validators/demoBookingValidator.js.
 const timeWindows = [
@@ -53,7 +54,6 @@ const schema = z.object({
   website: z.string().max(0, "").optional().or(z.literal("")),
 });
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function BookDemoForm({ preselected }) {
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error

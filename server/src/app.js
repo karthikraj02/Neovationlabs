@@ -5,7 +5,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const mongoSanitize = require("./middleware/sanitizeBody");
 
-const { clientUrl, nodeEnv } = require("./config/env");
+const { clientOrigins, nodeEnv } = require("./config/env");
 const { generalLimiter } = require("./middleware/rateLimiters");
 const { notFoundHandler, errorHandler } = require("./middleware/errorHandler");
 
@@ -25,7 +25,7 @@ app.set("trust proxy", 1);
 app.use(helmet());
 app.use(
   cors({
-    origin: clientUrl,
+    origin: clientOrigins,
     credentials: true,
   })
 );

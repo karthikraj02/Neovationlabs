@@ -8,6 +8,7 @@ import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import axios from "axios";
 import WhatsAppIcon from "./ui/WhatsAppIcon";
 import { projectRequestWhatsAppText, whatsappLink } from "../data/contactInfo";
+import { API_BASE } from "../lib/apiBase";
 
 const projectTypes = [
   "Generative AI",
@@ -35,7 +36,6 @@ const schema = z.object({
   website: z.string().max(0, "").optional().or(z.literal("")),
 });
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function ContactForm() {
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error

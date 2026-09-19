@@ -2,7 +2,7 @@
 import axios from "axios";
 import { TOKEN_KEY } from "./config";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { API_BASE } from "../lib/apiBase";
 
 export function getToken() {
   try {

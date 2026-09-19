@@ -35,6 +35,15 @@ function notifyRecipients(extra) {
   });
 }
 
+// Browsers send the site's address with no trailing slash and compare it to the
+// CORS header character for character, so "https://site.app/" would never match
+// "https://site.app". Slashes and stray spaces are stripped here, and several
+// allowed origins can be listed, comma-separated (e.g. production plus a preview).
+const clientOrigins = String(process.env.CLIENT_URL || "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
+
 // WhatsApp alerts. The number that receives them is the company WhatsApp number.
 // Two ways to send, picked by whichever credentials are present:
 //   - Meta WhatsApp Cloud API (official)  -> WHATSAPP_TOKEN + WHATSAPP_PHONE_NUMBER_ID
@@ -46,7 +55,8 @@ module.exports = {
   port: process.env.PORT || 5000,
   nodeEnv: process.env.NODE_ENV || "development",
   mongodbUri: process.env.MONGODB_URI || "",
-  clientUrl: process.env.CLIENT_URL || "http://localhost:5173",
+  clientUrl: clientOrigins[0] || "http://localhost:5173",
+  clientOrigins,
   // Admin login is disabled until JWT_SECRET is set.
   jwtSecret: process.env.JWT_SECRET || "",
   adminTokenTtl: process.env.ADMIN_TOKEN_TTL || "12h",

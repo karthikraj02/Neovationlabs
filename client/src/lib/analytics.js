@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { TOKEN_KEY } from "../admin/config";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { API_BASE } from "./apiBase";
 const VISITOR_KEY = "nl_vid";
 const SESSION_KEY = "nl_sid";
 
