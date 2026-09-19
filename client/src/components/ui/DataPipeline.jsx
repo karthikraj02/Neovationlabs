@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
@@ -44,6 +45,7 @@ export default function DataPipeline() {
     const canvas = canvasRef.current;
     if (!canvas || !inView) return undefined;
     const ctx = canvas.getContext("2d");
+    if (!ctx) return undefined;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let W = 0;

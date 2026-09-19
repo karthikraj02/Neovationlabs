@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 jest.mock("../src/models/Admin");
 jest.mock("../src/models/Project");
 jest.mock("../src/models/ContactSubmission");

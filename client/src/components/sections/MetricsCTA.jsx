@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { motion } from "framer-motion";
 import Container from "../ui/Container";
 import Button from "../ui/Button";

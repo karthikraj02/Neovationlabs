@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { Link, useSearchParams } from "react-router-dom";
 import { Video, Clock, Users, ShieldCheck } from "lucide-react";
 import PageHero from "../components/ui/PageHero";

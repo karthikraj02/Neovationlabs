@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 const ContactSubmission = require("../models/ContactSubmission");
 const { sendContactNotification } = require("../services/emailService");
 const { ApiError } = require("../middleware/errorHandler");

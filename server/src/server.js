@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 const app = require("./app");
 const { connectDB } = require("./config/db");
 const { port, nodeEnv } = require("./config/env");

@@ -1,6 +1,7 @@
 {
   "name": "neovationlabs",
   "version": "1.0.0",
+  "author": "Karthik Raj (https://beautiful-alpaca-6b1495.netlify.app/)",
   "description": "NeovationLabs — AI Engineering & Intelligent Software Infrastructure",
   "private": true,
   "workspaces": ["client", "server"],

@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 const { z } = require("zod");
 
 // Random ids generated in the browser (crypto.randomUUID or a fallback).

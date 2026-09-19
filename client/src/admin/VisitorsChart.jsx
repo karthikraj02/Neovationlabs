@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { useState } from "react";
 import { cn } from "../lib/utils";
 import { formatNumber } from "./format";

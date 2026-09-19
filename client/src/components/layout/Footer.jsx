@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { Link } from "react-router-dom";
 import { Code2, Users, AtSign, Mail } from "lucide-react";
 import Container from "../ui/Container";
@@ -106,7 +107,14 @@ export default function Footer() {
             © 2026 NeovationLabs. All rights reserved.
           </p>
           <p className="font-mono text-xs text-ink-faint">
-            Built with the MERN stack
+            <a
+              href="https://beautiful-alpaca-6b1495.netlify.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors duration-300 hover:text-signal"
+            >
+              Built by dev
+            </a>
           </p>
         </div>
       </Container>

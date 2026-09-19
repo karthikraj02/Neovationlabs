@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 // Product demo recordings shown on /demos. Video and poster assets live in
 // client/public/demos and are referenced by absolute path so they resolve
 // from any route depth.

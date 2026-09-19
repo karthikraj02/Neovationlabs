@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 class ApiError extends Error {
   constructor(statusCode, message, details) {
     super(message);

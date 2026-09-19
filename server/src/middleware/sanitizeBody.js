@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 function stripBadKeys(value) {
   if (Array.isArray(value)) {
     return value.map(stripBadKeys);

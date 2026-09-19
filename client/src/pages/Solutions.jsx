@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import PageHero from "../components/ui/PageHero";
 import Solutions from "../components/sections/Solutions";
 import MetricsCTA from "../components/sections/MetricsCTA";

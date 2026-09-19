@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { FolderKanban, Inbox, LayoutDashboard, LogOut, Video } from "lucide-react";
 import { useAuth } from "./AuthContext";

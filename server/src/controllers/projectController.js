@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 const Project = require("../models/Project");
 const { ApiError } = require("../middleware/errorHandler");
 const { projectStatuses } = require("../validators/adminValidator");

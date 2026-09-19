@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Video } from "lucide-react";

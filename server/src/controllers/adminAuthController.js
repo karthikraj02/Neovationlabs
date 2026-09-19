@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 const bcrypt = require("bcryptjs");
 const Admin = require("../models/Admin");
 const { jwtSecret, adminTokenTtl } = require("../config/env");

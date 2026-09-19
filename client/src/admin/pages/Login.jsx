@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Loader2, LockKeyhole } from "lucide-react";

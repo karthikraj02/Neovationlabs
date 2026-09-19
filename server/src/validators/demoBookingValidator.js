@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 const { z } = require("zod");
 
 // Slugs must match client/src/data/demos.js — a booking can only reference a

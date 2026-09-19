@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 /* eslint-disable no-console */
 // Creates an admin login, or resets the password if the email already exists.
 //

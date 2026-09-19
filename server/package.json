@@ -1,6 +1,7 @@
 {
   "name": "neovationlabs-server",
   "version": "1.0.0",
+  "author": "Karthik Raj (https://beautiful-alpaca-6b1495.netlify.app/)",
   "description": "NeovationLabs API \u2014 Express + MongoDB backend",
   "main": "src/server.js",
   "scripts": {

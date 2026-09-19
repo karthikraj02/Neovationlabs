@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { AlertCircle, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { cn } from "../lib/utils";
 

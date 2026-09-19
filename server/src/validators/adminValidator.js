@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 const { z } = require("zod");
 
 // Must match the enums in models/ContactSubmission.js and models/DemoBooking.js.

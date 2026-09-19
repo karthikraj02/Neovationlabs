@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 const mongoose = require("mongoose");
 
 // Anonymous, first-party page views. No IP address or cookie is stored — a

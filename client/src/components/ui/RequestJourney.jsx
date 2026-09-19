@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "framer-motion";
 import { cn } from "../../lib/utils";

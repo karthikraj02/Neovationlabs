@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import Hero from "../components/sections/Hero";
 import CapabilityStrip from "../components/sections/CapabilityStrip";
 import Services from "../components/sections/Services";

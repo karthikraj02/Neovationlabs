@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { useEffect, useRef } from "react";
 import { useReducedMotion } from "framer-motion";
 import { cn } from "../../lib/utils";
@@ -84,6 +85,7 @@ export default function HeroCore() {
     const wrap = wrapRef.current;
     if (!canvas || !wrap) return undefined;
     const ctx = canvas.getContext("2d");
+    if (!ctx) return undefined;
 
     let W = 0;
     let H = 0;

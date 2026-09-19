@@ -1,3 +1,4 @@
+// Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 const rateLimit = require("express-rate-limit");
 
 const isTest = process.env.NODE_ENV === "test";
