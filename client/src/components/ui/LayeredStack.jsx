@@ -94,9 +94,11 @@ export default function LayeredStack() {
     >
       <div className="absolute inset-0 -z-0 bg-[radial-gradient(ellipse_at_40%_50%,rgb(var(--signal-rgb)/0.08),transparent_65%)]" />
 
-      {/* 3D stack */}
+      {/* 3D stack. Purely visual: pointer events stay off because Chrome hit-tests
+          perspective-tilted layers far outside where they are drawn, which was
+          silently blocking clicks on buttons and links elsewhere on the page. */}
       <div
-        className="relative h-[340px] w-full max-w-[300px] shrink-0 sm:h-[420px] sm:w-[58%] sm:max-w-none"
+        className="pointer-events-none relative h-[340px] w-full max-w-[300px] shrink-0 sm:h-[420px] sm:w-[58%] sm:max-w-none"
         style={{ perspective: "1400px" }}
       >
         <div
@@ -123,10 +125,6 @@ export default function LayeredStack() {
             return (
               <div
                 key={layer.name}
-                onMouseEnter={() => {
-                  setActive(i);
-                  setPaused(true);
-                }}
                 className={cn(
                   "absolute left-1/2 top-1/2 -ml-[75px] -mt-[75px] h-[150px] w-[150px] rounded-2xl border sm:-ml-[90px] sm:-mt-[90px] sm:h-[180px] sm:w-[180px]",
                   on
