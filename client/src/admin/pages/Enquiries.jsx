@@ -116,7 +116,7 @@ export default function Enquiries() {
                   </div>
                   <div className="truncate text-xs text-ink-dim">
                     {item.projectType}
-                    <span className="text-ink-faint"> · {item.budget}</span>
+                    {item.budget && <span className="text-ink-faint"> · {item.budget}</span>}
                   </div>
                   <div className="text-xs text-ink-faint">{formatDateTime(item.createdAt)}</div>
                   <div className="md:justify-self-end">

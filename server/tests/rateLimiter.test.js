@@ -27,7 +27,6 @@ describe("Contact rate limiter", () => {
     // the 429 kicking in before/regardless of body validation, and we
     // don't want this test to depend on the ContactSubmission model.
     projectType: "Other",
-    budget: "Under $10k",
     message: "x".repeat(25),
   };
 

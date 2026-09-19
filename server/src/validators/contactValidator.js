@@ -22,7 +22,6 @@ const contactSchema = z.object({
   projectType: z.enum(projectTypes, {
     errorMap: () => ({ message: "Select a valid project type" }),
   }),
-  budget: z.string().trim().min(1, "Select a budget range").max(60),
   message: z.string().trim().min(20, "Message must be at least 20 characters").max(4000),
   // Honeypot — must arrive empty. Populated only by bots that fill every
   // field on a form; real browsers never show this input to a visitor.

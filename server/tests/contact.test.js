@@ -14,7 +14,6 @@ const validPayload = {
   email: "ada@example.com",
   phone: "",
   projectType: "Generative AI",
-  budget: "$25k – $75k",
   message: "We'd like to explore an internal knowledge assistant for our support team.",
 };
 
@@ -31,6 +30,27 @@ describe("POST /api/contact", () => {
     expect(res.statusCode).toBe(201);
     expect(res.body.success).toBe(true);
     expect(ContactSubmission.create).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not require a budget", async () => {
+    ContactSubmission.create.mockResolvedValue({ _id: "abc123" });
+
+    const res = await request(app).post("/api/contact").send(validPayload);
+
+    expect(res.statusCode).toBe(201);
+    expect(validPayload).not.toHaveProperty("budget");
+  });
+
+  it("still accepts a submission from an older page that sends a budget, and ignores it", async () => {
+    ContactSubmission.create.mockResolvedValue({ _id: "abc123" });
+
+    const res = await request(app)
+      .post("/api/contact")
+      .send({ ...validPayload, budget: "$25k – $75k" });
+
+    expect(res.statusCode).toBe(201);
+    const saved = ContactSubmission.create.mock.calls[0][0];
+    expect(saved).not.toHaveProperty("budget");
   });
 
   it("rejects empty input with field-level errors", async () => {

@@ -191,6 +191,33 @@ describe("admin enquiries and demo requests", () => {
     expect(adminApi.updateEnquiry).toHaveBeenCalledWith("e1", { status: "reviewed" });
   });
 
+  it("lists an enquiry without a budget cleanly, and still shows the budget on older ones", async () => {
+    const base = {
+      phone: "",
+      projectType: "Generative AI",
+      message: "We'd like an internal knowledge assistant.",
+      status: "new",
+      createdAt: now,
+    };
+    adminApi.enquiries.mockResolvedValue({
+      data: [
+        { ...base, _id: "e-new", name: "New Visitor", company: "", email: "new@example.com" },
+        { ...base, _id: "e-old", name: "Older Visitor", company: "", email: "old@example.com", budget: "$25k – $75k" },
+      ],
+      page: 1,
+      pages: 1,
+      total: 2,
+    });
+    renderAt(<Enquiries />);
+
+    const fresh = await screen.findByRole("button", { name: /New Visitor/ });
+    expect(fresh).toHaveTextContent("Generative AI");
+    expect(fresh).not.toHaveTextContent("·");
+
+    const older = screen.getByRole("button", { name: /Older Visitor/ });
+    expect(older).toHaveTextContent("$25k – $75k");
+  });
+
   it("shows a demo request with the demo names, not slugs", async () => {
     adminApi.demoBookings.mockResolvedValue({
       data: [

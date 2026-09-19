@@ -23,7 +23,8 @@ const contactSubmissionSchema = new mongoose.Schema(
         "Other",
       ],
     },
-    budget: { type: String, required: true, trim: true, maxlength: 60 },
+    // No longer collected by the form; kept (optional) so older enquiries still show it.
+    budget: { type: String, trim: true, maxlength: 60, default: "" },
     message: { type: String, required: true, trim: true, maxlength: 4000 },
     status: {
       type: String,

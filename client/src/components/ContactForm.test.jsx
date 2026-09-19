@@ -21,8 +21,13 @@ describe("ContactForm", () => {
     expect(await screen.findByText(/enter your full name/i)).toBeInTheDocument();
     expect(screen.getByText(/enter a valid email address/i)).toBeInTheDocument();
     expect(screen.getByText(/select a project type/i)).toBeInTheDocument();
-    expect(screen.getByText(/select a budget range/i)).toBeInTheDocument();
     expect(axios.post).not.toHaveBeenCalled();
+  });
+
+  it("no longer asks for a budget", () => {
+    render(<ContactForm />);
+    expect(screen.queryByLabelText(/budget/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/budget/i)).not.toBeInTheDocument();
   });
 
   it("rejects a message that is too short", async () => {
@@ -46,7 +51,6 @@ describe("ContactForm", () => {
     await user.type(screen.getByLabelText(/^name/i), "Ada Lovelace");
     await user.type(screen.getByLabelText(/^email/i), "ada@example.com");
     await user.selectOptions(screen.getByLabelText(/project type/i), "Generative AI");
-    await user.selectOptions(screen.getByLabelText(/budget range/i), "$25k – $75k");
     await user.type(
       screen.getByLabelText(/^message/i),
       "We'd like to explore an internal knowledge assistant for our support team."
@@ -58,6 +62,36 @@ describe("ContactForm", () => {
       await screen.findByText(/your project request has been received/i)
     ).toBeInTheDocument();
     expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(axios.post.mock.calls[0][1]).not.toHaveProperty("budget");
+  });
+
+  it("offers the request on WhatsApp after a successful submit, with the visitor's details", async () => {
+    axios.post.mockResolvedValueOnce({
+      data: { success: true, message: "Your project request has been received." },
+    });
+
+    const user = userEvent.setup();
+    render(<ContactForm />);
+
+    await user.type(screen.getByLabelText(/^name/i), "Ada Lovelace");
+    await user.type(screen.getByLabelText(/^email/i), "ada@example.com");
+    await user.selectOptions(screen.getByLabelText(/project type/i), "Generative AI");
+    await user.type(
+      screen.getByLabelText(/^message/i),
+      "We'd like to explore an internal knowledge assistant for our support team."
+    );
+    await user.click(screen.getByRole("button", { name: /send project request/i }));
+
+    const whatsapp = await screen.findByRole("link", { name: /message us on whatsapp/i });
+    const href = whatsapp.getAttribute("href");
+    expect(href.startsWith("https://wa.me/919901723492?text=")).toBe(true);
+    const text = decodeURIComponent(href.split("?text=")[1]);
+    expect(text).toContain("Name: Ada Lovelace");
+    expect(text).toContain("Email: ada@example.com");
+    expect(text).toContain("Project type: Generative AI");
+    expect(text).toContain("internal knowledge assistant");
+    expect(whatsapp).toHaveAttribute("target", "_blank");
+    expect(whatsapp.getAttribute("rel")).toContain("noopener");
   });
 
   it("shows a server error message when the request fails", async () => {
@@ -71,7 +105,6 @@ describe("ContactForm", () => {
     await user.type(screen.getByLabelText(/^name/i), "Ada Lovelace");
     await user.type(screen.getByLabelText(/^email/i), "ada@example.com");
     await user.selectOptions(screen.getByLabelText(/project type/i), "Generative AI");
-    await user.selectOptions(screen.getByLabelText(/budget range/i), "$25k – $75k");
     await user.type(
       screen.getByLabelText(/^message/i),
       "We'd like to explore an internal knowledge assistant for our support team."

@@ -14,7 +14,7 @@ export default function Privacy() {
       <h2>What we collect</h2>
       <p>
         Information submitted through the contact form — name, company,
-        email, phone, project type, budget range, and message — is stored to
+        email, phone, project type, and message — is stored to
         respond to your inquiry.
       </p>
       <h2>How we use it</h2>

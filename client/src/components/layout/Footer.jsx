@@ -5,6 +5,7 @@ import Container from "../ui/Container";
 import Logo from "../ui/Logo";
 import InstagramIcon from "../ui/InstagramIcon";
 import WhatsAppIcon from "../ui/WhatsAppIcon";
+import { PHONE_DISPLAY, PHONE_TEL, whatsappLink } from "../../data/contactInfo";
 
 const columns = [
   {
@@ -42,12 +43,6 @@ const columns = [
     ],
   },
 ];
-
-// One number, written once. `tel:` needs the +country code with no spaces,
-// and wa.me needs the digits only (no +).
-const PHONE_DISPLAY = "+91 99017 23492";
-const PHONE_TEL = "tel:+919901723492";
-const WHATSAPP_URL = "https://wa.me/919901723492";
 
 const social = [
   { icon: Users, href: "https://www.linkedin.com/company/neovation-labs-in/", label: "LinkedIn" },
@@ -87,7 +82,7 @@ export default function Footer() {
                   {PHONE_DISPLAY}
                 </a>
                 <a
-                  href={WHATSAPP_URL}
+                  href={whatsappLink()}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Chat with us on WhatsApp at ${PHONE_DISPLAY}`}

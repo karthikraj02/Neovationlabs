@@ -6,6 +6,8 @@ import { z } from "zod";
 import { motion } from "framer-motion";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import axios from "axios";
+import WhatsAppIcon from "./ui/WhatsAppIcon";
+import { projectRequestWhatsAppText, whatsappLink } from "../data/contactInfo";
 
 const projectTypes = [
   "Generative AI",
@@ -20,22 +22,12 @@ const projectTypes = [
   "Other",
 ];
 
-const budgetRanges = [
-  "Under $10k",
-  "$10k – $25k",
-  "$25k – $75k",
-  "$75k – $150k",
-  "$150k+",
-  "Not sure yet",
-];
-
 const schema = z.object({
   name: z.string().trim().min(2, "Enter your full name").max(120),
   company: z.string().trim().max(160).optional().or(z.literal("")),
   email: z.string().trim().email("Enter a valid email address"),
   phone: z.string().trim().max(30).optional().or(z.literal("")),
   projectType: z.string().min(1, "Select a project type"),
-  budget: z.string().min(1, "Select a budget range"),
   message: z.string().trim().min(20, "Tell us a bit more — at least 20 characters").max(4000),
   // Honeypot — real visitors never see or fill this field. Bots that
   // auto-fill every input on a form will, which is enough to filter them
@@ -48,6 +40,8 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 export default function ContactForm() {
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
   const [serverError, setServerError] = useState("");
+  // What the visitor just sent, kept so the success screen can offer it on WhatsApp.
+  const [submitted, setSubmitted] = useState(null);
 
   const {
     register,
@@ -62,6 +56,7 @@ export default function ContactForm() {
     try {
       const res = await axios.post(`${API_BASE}/api/contact`, data);
       if (res.data?.success) {
+        setSubmitted(data);
         setStatus("success");
         reset();
       } else {
@@ -90,9 +85,28 @@ export default function ContactForm() {
         <p className="mt-2 max-w-sm text-sm text-ink-dim">
           We'll follow up at the email you provided, usually within one business day.
         </p>
+        {submitted && (
+          <>
+            <a
+              href={whatsappLink(projectRequestWhatsAppText(submitted))}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-2 rounded-full border border-line bg-void px-5 py-2.5 text-sm font-medium text-ink transition-colors duration-300 hover:border-signal-dim hover:text-signal"
+            >
+              <WhatsAppIcon size={16} />
+              Also message us on WhatsApp
+            </a>
+            <p className="mt-2 max-w-xs text-xs text-ink-faint">
+              Opens WhatsApp with your request ready to send, for the fastest reply.
+            </p>
+          </>
+        )}
         <button
           type="button"
-          onClick={() => setStatus("idle")}
+          onClick={() => {
+            setSubmitted(null);
+            setStatus("idle");
+          }}
           className="mt-6 text-sm text-signal hover:underline"
         >
           Send another message
@@ -139,32 +153,18 @@ export default function ContactForm() {
         </Field>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Project type" error={errors.projectType?.message}>
-          <select {...register("projectType")} className={inputClass(errors.projectType)} defaultValue="">
-            <option value="" disabled>
-              Select one
+      <Field label="Project type" error={errors.projectType?.message}>
+        <select {...register("projectType")} className={inputClass(errors.projectType)} defaultValue="">
+          <option value="" disabled>
+            Select one
+          </option>
+          {projectTypes.map((t) => (
+            <option key={t} value={t}>
+              {t}
             </option>
-            {projectTypes.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Budget range" error={errors.budget?.message}>
-          <select {...register("budget")} className={inputClass(errors.budget)} defaultValue="">
-            <option value="" disabled>
-              Select one
-            </option>
-            {budgetRanges.map((b) => (
-              <option key={b} value={b}>
-                {b}
-              </option>
-            ))}
-          </select>
-        </Field>
-      </div>
+          ))}
+        </select>
+      </Field>
 
       <Field label="Message" error={errors.message?.message}>
         <textarea

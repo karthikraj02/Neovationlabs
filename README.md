@@ -101,7 +101,7 @@ cp client/.env.example client/.env
 | `MONGODB_URI` | MongoDB Atlas / local connection string |
 | `CLIENT_URL` | Frontend origin, used for CORS |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASSWORD` | Optional — enables contact-form email notifications. If left blank, submissions still save to MongoDB, email is just skipped. |
-| `CONTACT_NOTIFY_EMAIL` | Optional — where notification emails are sent (defaults to `SMTP_USER`) |
+| `CONTACT_NOTIFY_EMAIL` | Optional — extra notification recipients, comma-separated. Emails always go to `neovationlabs@outlook.com` and `neovationlabs.official@gmail.com`; these are added to them, never replacing them. |
 
 **`client/.env`**
 
@@ -157,7 +157,6 @@ npm run dev:server
   "email": "ada@example.com",
   "phone": "",
   "projectType": "Generative AI",
-  "budget": "$25k – $75k",
   "message": "We'd like to explore an internal knowledge assistant."
 }
 ```

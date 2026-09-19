@@ -25,7 +25,7 @@ async function sendContactNotification(submission) {
     return { sent: false, reason: "smtp-not-configured" };
   }
 
-  const { name, company, email, projectType, budget, message } = submission;
+  const { name, company, email, phone, projectType, message } = submission;
 
   await mailer.sendMail({
     from: `"NeovationLabs" <${smtp.user}>`,
@@ -36,8 +36,8 @@ async function sendContactNotification(submission) {
       `Name: ${name}`,
       `Company: ${company || "—"}`,
       `Email: ${email}`,
+      `Phone: ${phone || "—"}`,
       `Project type: ${projectType}`,
-      `Budget: ${budget}`,
       "",
       message,
     ].join("\n"),
