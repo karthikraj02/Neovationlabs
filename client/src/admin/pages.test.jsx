@@ -306,6 +306,8 @@ describe("admin visitors", () => {
     firstSeen: "2026-09-01T05:00:00.000Z",
     lastSeen: "2026-09-19T10:00:00.000Z",
     country: "IN",
+    region: "KA",
+    city: "Bengaluru",
     device: "mobile",
     lastPath: "/contact",
   };
@@ -320,6 +322,8 @@ describe("admin visitors", () => {
         endedAt: "2026-09-19T10:02:00.000Z",
         device: "mobile",
         country: "IN",
+        region: "KA",
+        city: "Bengaluru",
         referrer: "google.com",
         pages: [
           { path: "/services", at: "2026-09-19T10:00:00.000Z" },
@@ -352,6 +356,42 @@ describe("admin visitors", () => {
     expect(rowButton).toHaveTextContent("9"); // page views
     expect(rowButton).toHaveTextContent("Returning");
     expect(adminApi.visitors).toHaveBeenCalledWith({ days: 30, q: undefined, page: 1 });
+  });
+
+  it("shows where each visitor is, as a place name rather than a code", async () => {
+    renderAt(<Visitors />);
+
+    const rowButton = await screen.findByRole("button", { name: /203\.0\.113\.7, 3 visits/ });
+    expect(rowButton).toHaveTextContent("Bengaluru (KA), India");
+    expect(rowButton).not.toHaveTextContent(/\bIN\b/);
+  });
+
+  it("shows the place of each individual visit too", async () => {
+    renderAt(<Visitors />);
+
+    fireEvent.click(await screen.findByRole("button", { name: /203\.0\.113\.7/ }));
+
+    expect(await screen.findByText(/Bengaluru \(KA\), India · mobile · from google\.com/)).toBeInTheDocument();
+  });
+
+  it("says the location is unknown when the server could not tell, instead of showing nothing", async () => {
+    adminApi.visitors.mockResolvedValue({
+      data: [{ ...row, city: "", region: "", country: "" }],
+      page: 1,
+      pages: 1,
+      total: 1,
+      range: { days: 30 },
+    });
+    renderAt(<Visitors />);
+
+    const rowButton = await screen.findByRole("button", { name: /203\.0\.113\.7, 3 visits/ });
+    expect(rowButton).toHaveTextContent("Location unknown");
+  });
+
+  it("tells the admin that locations are approximate", async () => {
+    renderAt(<Visitors />);
+
+    expect(await screen.findByText(/locations are approximate/i)).toBeInTheDocument();
   });
 
   it("does not call a single visit 'returning'", async () => {

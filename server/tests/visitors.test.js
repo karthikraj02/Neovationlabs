@@ -54,7 +54,7 @@ describe("visitor endpoints require an admin sign-in", () => {
 
 describe("GET /api/admin/visitors", () => {
   const rows = [
-    { ip: "203.0.113.7", pageViews: 9, visits: 3, devices: 1, firstSeen: at("2026-09-01T05:00:00Z"), lastSeen: at("2026-09-19T10:00:00Z"), country: "IN", device: "mobile", lastPath: "/contact" },
+    { ip: "203.0.113.7", pageViews: 9, visits: 3, devices: 1, firstSeen: at("2026-09-01T05:00:00Z"), lastSeen: at("2026-09-19T10:00:00Z"), country: "IN", region: "KA", city: "Bengaluru", device: "mobile", lastPath: "/contact" },
     { ip: "198.51.100.4", pageViews: 2, visits: 1, devices: 1, firstSeen: at("2026-09-18T05:00:00Z"), lastSeen: at("2026-09-18T05:02:00Z"), country: "US", device: "desktop", lastPath: "/" },
   ];
 
@@ -67,6 +67,9 @@ describe("GET /api/admin/visitors", () => {
     expect(res.body).toMatchObject({ success: true, page: 1, pages: 1, total: 2, range: { days: 30 } });
     expect(res.body.data[0]).toMatchObject({
       ip: "203.0.113.7",
+      city: "Bengaluru",
+      region: "KA",
+      country: "IN",
       visits: 3,
       pageViews: 9,
       firstSeen: "2026-09-01T05:00:00.000Z",
@@ -84,6 +87,10 @@ describe("GET /api/admin/visitors", () => {
     expect(group._id).toBe("$ip");
     expect(group.sessions).toEqual({ $addToSet: "$sessionId" }); // distinct sessions = visits
     expect(group.devices).toEqual({ $addToSet: "$visitorId" });
+    // the place shown for an address is the one from its most recent visit
+    expect(group.city).toEqual({ $last: "$city" });
+    expect(group.region).toEqual({ $last: "$region" });
+    expect(group.country).toEqual({ $last: "$country" });
     expect(pipeline.find((stage) => stage.$sort && stage.$sort.lastSeen).$sort).toEqual({ lastSeen: -1 });
   });
 
@@ -131,7 +138,7 @@ describe("GET /api/admin/visitors/detail", () => {
     // newest first, as the database returns them
     VisitLog.find.mockReturnValue(
       findChain([
-        { sessionId: "s2", visitorId: "v1", path: "/contact", referrer: "", device: "mobile", country: "IN", createdAt: at("2026-09-19T10:02:00Z") },
+        { sessionId: "s2", visitorId: "v1", path: "/contact", referrer: "", device: "mobile", country: "IN", region: "KA", city: "Bengaluru", createdAt: at("2026-09-19T10:02:00Z") },
         { sessionId: "s2", visitorId: "v1", path: "/services", referrer: "google.com", device: "mobile", country: "IN", createdAt: at("2026-09-19T10:00:00Z") },
         { sessionId: "s1", visitorId: "v1", path: "/", referrer: "", device: "mobile", country: "IN", createdAt: at("2026-09-01T05:00:00Z") },
       ])
@@ -147,6 +154,9 @@ describe("GET /api/admin/visitors/detail", () => {
     // most recent visit first
     expect(data.visits.map((v) => v.sessionId)).toEqual(["s2", "s1"]);
     expect(data.visits[0]).toMatchObject({
+      city: "Bengaluru",
+      region: "KA",
+      country: "IN",
       startedAt: "2026-09-19T10:00:00.000Z",
       endedAt: "2026-09-19T10:02:00.000Z",
       referrer: "google.com",

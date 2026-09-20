@@ -36,6 +36,8 @@ async function listVisitors(req, res, next) {
           firstSeen: { $min: "$createdAt" },
           lastSeen: { $max: "$createdAt" },
           country: { $last: "$country" },
+          region: { $last: "$region" },
+          city: { $last: "$city" },
           device: { $last: "$device" },
           lastPath: { $last: "$path" },
         },
@@ -50,6 +52,8 @@ async function listVisitors(req, res, next) {
           firstSeen: 1,
           lastSeen: 1,
           country: 1,
+          region: 1,
+          city: 1,
           device: 1,
           lastPath: 1,
         },
@@ -82,7 +86,7 @@ async function getVisitorDetail(req, res, next) {
     const logs = await VisitLog.find({ ip })
       .sort({ createdAt: -1 })
       .limit(DETAIL_LIMIT + 1)
-      .select("sessionId visitorId path referrer device country createdAt")
+      .select("sessionId visitorId path referrer device country region city createdAt")
       .lean();
 
     const truncated = logs.length > DETAIL_LIMIT;
@@ -94,7 +98,7 @@ async function getVisitorDetail(req, res, next) {
       devices.add(row.visitorId);
       let visit = sessions.get(row.sessionId);
       if (!visit) {
-        visit = { sessionId: row.sessionId, startedAt: row.createdAt, endedAt: row.createdAt, device: row.device, country: row.country, referrer: "", pages: [] };
+        visit = { sessionId: row.sessionId, startedAt: row.createdAt, endedAt: row.createdAt, device: row.device, country: row.country, region: row.region || "", city: row.city || "", referrer: "", pages: [] };
         sessions.set(row.sessionId, visit);
       }
       if (row.createdAt < visit.startedAt) visit.startedAt = row.createdAt;

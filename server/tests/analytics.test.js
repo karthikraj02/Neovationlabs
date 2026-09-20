@@ -104,7 +104,49 @@ describe("POST /api/analytics/pageview: the IP-tagged visit log", () => {
       referrer: "google.com",
       device: "mobile",
       country: "",
+      region: "",
+      city: "",
     });
+  });
+
+  it("records the visitor's approximate place, from Vercel's headers, with the visit", async () => {
+    await post({
+      "X-Forwarded-For": "203.0.113.7",
+      "X-Vercel-IP-Country": "in",
+      "X-Vercel-IP-Country-Region": "ka",
+      "X-Vercel-IP-City": "Bengaluru",
+    });
+
+    expect(VisitLog.create.mock.calls[0][0]).toMatchObject({ country: "IN", region: "KA", city: "Bengaluru" });
+  });
+
+  it("decodes an accented city name, which Vercel sends URL-encoded", async () => {
+    await post({ "X-Forwarded-For": "203.0.113.7", "X-Vercel-IP-City": "S%C3%A3o%20Paulo" });
+
+    expect(VisitLog.create.mock.calls[0][0].city).toBe("São Paulo");
+  });
+
+  it("stores a clean, length-limited place even if a header is hostile", async () => {
+    await post({ "X-Forwarded-For": "203.0.113.7", "X-Vercel-IP-City": `<img src=x>${"a".repeat(400)}` });
+
+    const { city } = VisitLog.create.mock.calls[0][0];
+    expect(city).not.toContain("<");
+    expect(city.length).toBeLessThanOrEqual(100);
+  });
+
+  it("keeps the anonymous page view to the country only, never the city or region", async () => {
+    await post({
+      "X-Forwarded-For": "203.0.113.7",
+      "X-Vercel-IP-Country": "IN",
+      "X-Vercel-IP-Country-Region": "KA",
+      "X-Vercel-IP-City": "Bengaluru",
+    });
+
+    const anonymous = PageView.create.mock.calls[0][0];
+    expect(anonymous.country).toBe("IN");
+    expect(anonymous).not.toHaveProperty("city");
+    expect(anonymous).not.toHaveProperty("region");
+    expect(JSON.stringify(anonymous)).not.toContain("Bengaluru");
   });
 
   it("keeps the anonymous page view free of any IP address", async () => {

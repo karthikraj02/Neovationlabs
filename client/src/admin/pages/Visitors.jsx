@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Search, Trash2 } from "lucide-react";
 import { useApiResource } from "../../hooks/useApiResource";
 import { adminApi, errorMessage } from "../api";
-import { formatDateTime, formatNumber, timeAgo, useDebounced } from "../format";
+import { formatDateTime, formatLocation, formatNumber, timeAgo, useDebounced } from "../format";
 import { Empty, ErrorNotice, Loading, PageHeader, Pagination, Segmented, buttonClass, inputClass, labelClass } from "../ui";
 import { cn } from "../../lib/utils";
 
@@ -62,8 +62,7 @@ function VisitorDetail({ ip, onDeleted }) {
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                   <span className="text-ink">{formatDateTime(visit.startedAt)}</span>
                   <span className="text-xs text-ink-faint">
-                    {visit.device}
-                    {visit.country ? ` · ${visit.country}` : ""}
+                    {[formatLocation(visit), visit.device].filter(Boolean).join(" · ")}
                     {visit.referrer ? ` · from ${visit.referrer}` : ""}
                   </span>
                 </div>
@@ -111,7 +110,7 @@ export default function Visitors() {
     <div className="space-y-6">
       <PageHeader
         title="Visitors"
-        description={`Everyone who has visited the site, by IP address: how many times they came back, and when. Records are kept for ${RETENTION_DAYS} days, then deleted automatically. Visits from before this page existed were not recorded with an address.`}
+        description={`Everyone who has visited the site, by IP address: how many times they came back, and when. Records are kept for ${RETENTION_DAYS} days, then deleted automatically. Visits from before this page existed were not recorded with an address. Locations are approximate, worked out from the IP address, so a VPN or a mobile network can show the wrong city.`}
       />
 
       <div className="flex flex-wrap items-center gap-3">
@@ -170,8 +169,7 @@ export default function Visitors() {
                   <div className="col-span-2 min-w-0 md:col-span-1">
                     <div className="truncate font-mono text-sm text-ink">{item.ip}</div>
                     <div className="truncate text-xs text-ink-faint">
-                      {item.device}
-                      {item.country ? ` · ${item.country}` : ""}
+                      {formatLocation(item) || "Location unknown"} · {item.device}
                       {item.devices > 1 ? ` · ${item.devices} devices` : ""}
                     </div>
                   </div>

@@ -2,6 +2,7 @@
 const PageView = require("../models/PageView");
 const VisitLog = require("../models/VisitLog");
 const { cleanIp } = require("../lib/ip");
+const { locationFrom } = require("../lib/geo");
 const { clientUrl } = require("../config/env");
 const { ApiError } = require("../middleware/errorHandler");
 
@@ -40,6 +41,7 @@ async function recordPageView(req, res, next) {
     country: (req.get("x-vercel-ip-country") || "").slice(0, 2).toUpperCase(),
   };
   const ip = cleanIp(req.ip);
+  const { region, city } = locationFrom(req);
 
   try {
     await Promise.all([
@@ -48,7 +50,7 @@ async function recordPageView(req, res, next) {
       // The same view with the IP, for the admin's Visitors page: kept 90 days. Failing to
       // record it must never lose the anonymous view, so it is handled on its own.
       ip
-        ? VisitLog.create({ ...view, ip }).catch((err) => {
+        ? VisitLog.create({ ...view, ip, region, city }).catch((err) => {
             // eslint-disable-next-line no-console
             console.error("[visitors] Could not record visit:", err.message);
           })

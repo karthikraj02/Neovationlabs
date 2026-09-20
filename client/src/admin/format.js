@@ -47,6 +47,28 @@ export function timeAgo(value) {
   return formatDate(d);
 }
 
+let countryNames;
+
+// "IN" -> "India". Falls back to the code itself where the browser can't translate it.
+function countryName(code) {
+  if (!code) return "";
+  try {
+    countryNames = countryNames || new Intl.DisplayNames(["en"], { type: "region" });
+    return countryNames.of(code) || code;
+  } catch {
+    return code;
+  }
+}
+
+/**
+ * A visitor's approximate place for display: "Bengaluru (KA), India". Any part that is
+ * unknown is left out, and the result is "" when nothing is known.
+ */
+export function formatLocation({ city, region, country } = {}) {
+  const place = city ? (region ? `${city} (${region})` : city) : "";
+  return [place, countryName(country)].filter(Boolean).join(", ");
+}
+
 export function formatNumber(n) {
   return new Intl.NumberFormat(LOCALE).format(n ?? 0);
 }

@@ -16,6 +16,10 @@ const visitLogSchema = new mongoose.Schema({
   referrer: { type: String, default: "", maxlength: 200 },
   device: { type: String, enum: ["desktop", "mobile", "tablet"], default: "desktop" },
   country: { type: String, default: "", maxlength: 2 },
+  // Approximate place from the IP address (see lib/geo.js). Kept only here, with the IP,
+  // and deleted with it after RETENTION_DAYS. The anonymous PageView keeps just the country.
+  region: { type: String, default: "", maxlength: 10 },
+  city: { type: String, default: "", maxlength: 100 },
   createdAt: { type: Date, default: Date.now },
 });
 
