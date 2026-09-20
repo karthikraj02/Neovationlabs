@@ -218,6 +218,48 @@ describe("admin enquiries and demo requests", () => {
     expect(older).toHaveTextContent("$25k – $75k");
   });
 
+  it("shows what happened to each enquiry's team alerts, and nothing for older enquiries without a record", async () => {
+    const base = {
+      phone: "",
+      company: "",
+      projectType: "Generative AI",
+      message: "We'd like an internal knowledge assistant.",
+      status: "new",
+      createdAt: now,
+    };
+    adminApi.enquiries.mockResolvedValue({
+      data: [
+        {
+          ...base,
+          _id: "e-alerts",
+          name: "Alerted Visitor",
+          email: "alerted@example.com",
+          alerts: {
+            email: { status: "failed", detail: "Resend responded 403 for someone@example.com" },
+            whatsapp: { status: "skipped", detail: "whatsapp-not-configured" },
+            at: now,
+          },
+        },
+        { ...base, _id: "e-old", name: "Older Visitor", email: "old@example.com" },
+      ],
+      page: 1,
+      pages: 1,
+      total: 2,
+    });
+    renderAt(<Enquiries />);
+
+    fireEvent.click(await screen.findByRole("button", { name: /Alerted Visitor/ }));
+    expect(screen.getByText("Team alerts")).toBeInTheDocument();
+    expect(screen.getByText("Failed")).toBeInTheDocument();
+    expect(screen.getByText(/Resend responded 403 for someone@example.com/)).toBeInTheDocument();
+    expect(screen.getByText("Not sent")).toBeInTheDocument();
+
+    // Only one enquiry is open at a time, so opening the older one closes the first.
+    fireEvent.click(screen.getByRole("button", { name: /Older Visitor/ }));
+    expect(screen.getByText("We'd like an internal knowledge assistant.")).toBeInTheDocument();
+    expect(screen.queryByText("Team alerts")).not.toBeInTheDocument(); // no record, so no empty section
+  });
+
   it("shows a demo request with the demo names, not slugs", async () => {
     adminApi.demoBookings.mockResolvedValue({
       data: [

@@ -31,6 +31,13 @@ const contactSubmissionSchema = new mongoose.Schema(
       enum: ["new", "reviewed", "archived"],
       default: "new",
     },
+    // What happened to the team alerts for this enquiry, so "did anyone get told?"
+    // always has an answer. Each status is one of: sent, partial, skipped, failed, timed-out.
+    alerts: {
+      email: { status: { type: String, trim: true, maxlength: 20 }, detail: { type: String, trim: true, maxlength: 400 } },
+      whatsapp: { status: { type: String, trim: true, maxlength: 20 }, detail: { type: String, trim: true, maxlength: 400 } },
+      at: { type: Date },
+    },
     ip: { type: String, select: false },
   },
   { timestamps: true }

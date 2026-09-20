@@ -100,7 +100,7 @@ cp client/.env.example client/.env
 | `PORT` | API port (default `5000`) |
 | `MONGODB_URI` | MongoDB Atlas / local connection string |
 | `CLIENT_URL` | Frontend origin, used for CORS |
-| `RESEND_API_KEY` / `EMAIL_FROM` | Optional — sends the notification emails through [Resend](https://resend.com) (used instead of SMTP when the key is set). With the free `onboarding@resend.dev` sender, Resend only delivers to your own Resend account address; verify a domain to reach both team inboxes. |
+| `RESEND_API_KEY` / `EMAIL_FROM` | Optional — sends the notification emails through [Resend](https://resend.com). Only used when SMTP is *not* fully configured; SMTP takes priority. With the free `onboarding@resend.dev` sender, Resend only delivers to your own Resend account address; verify a domain to reach both team inboxes. |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASSWORD` | Optional — enables contact-form email notifications. If left blank, submissions still save to MongoDB, email is just skipped. |
 | `CALLMEBOT_API_KEY`, or `WHATSAPP_TOKEN` + `WHATSAPP_PHONE_NUMBER_ID` (+ `WHATSAPP_TEMPLATE`) | Optional — sends each new project request to the company WhatsApp number automatically. CallMeBot is the quick free option; the Meta Cloud API is the official one. Both blank = WhatsApp alerts off. See `server/.env.example`. |
 | `CONTACT_NOTIFY_EMAIL` | Optional — extra notification recipients, comma-separated. Emails always go to `neovationlabs@outlook.com` and `neovationlabs.official@gmail.com`; these are added to them, never replacing them. |

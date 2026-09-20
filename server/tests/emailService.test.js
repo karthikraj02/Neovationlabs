@@ -118,7 +118,7 @@ describe("email through Resend", () => {
     process.env.EMAIL_FROM = "";
   });
 
-  it("sends one email to each team inbox, authenticated with the key", async () => {
+  it("still sends both team inboxes one email each when SMTP is not set up", async () => {
     const { sendContactNotification } = withResend();
 
     const result = await sendContactNotification(submission);
@@ -194,17 +194,20 @@ describe("email through Resend", () => {
     expect(thrown.message).not.toContain("re_test_key_123");
   });
 
-  it("uses Resend rather than SMTP when both are configured", async () => {
+  it("uses SMTP, not Resend, when both are configured", async () => {
+    // A leftover RESEND_API_KEY must not override a working SMTP setup: Resend's free
+    // sender reaches only one inbox, which is what broke the live notification emails.
     const { sendContactNotification, sendMail } = withResend({
       SMTP_HOST: "smtp.test.example",
       SMTP_USER: "sender@test.example",
       SMTP_PASSWORD: "not-a-real-password",
     });
 
-    await sendContactNotification(submission);
+    const result = await sendContactNotification(submission);
 
-    expect(sendMail).not.toHaveBeenCalled();
-    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(result).toEqual({ sent: true });
+    expect(sendMail).toHaveBeenCalledTimes(1);
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it("also carries demo booking requests to both inboxes", async () => {
@@ -250,5 +253,61 @@ describe("test environment", () => {
     expect(() => guarded("https://api.resend.com/emails", { method: "POST" })).toThrow(/real messaging API/);
     expect(() => guarded("https://api.callmebot.com/whatsapp.php?apikey=x")).toThrow(/real messaging API/);
     expect(() => guarded("https://graph.facebook.com/v21.0/1/messages")).toThrow(/real messaging API/);
+  });
+});
+
+describe("email status report", () => {
+  const realFetch = global.fetch;
+  const statusFor = (env) => loadService({ SMTP_HOST: "", SMTP_USER: "", SMTP_PASSWORD: "", ...env }).emailStatus();
+  afterEach(() => {
+    global.fetch = realFetch;
+    process.env.RESEND_API_KEY = "";
+    process.env.EMAIL_FROM = "";
+  });
+
+  it("says nothing is set up, and how to fix it, when neither Resend nor SMTP is configured", () => {
+    const status = statusFor({});
+
+    expect(status).toMatchObject({ configured: false, provider: null, recipientCount: 2 });
+    expect(status.hint).toMatch(/RESEND_API_KEY/);
+  });
+
+  it("warns that Resend's free test sender only reaches the account owner", () => {
+    const status = statusFor({ RESEND_API_KEY: "re_test_key_123" });
+
+    expect(status).toMatchObject({ configured: true, provider: "resend", from: "onboarding@resend.dev", recipientCount: 2 });
+    expect(status.warning).toMatch(/only delivers to the email address the Resend account was created with/i);
+  });
+
+  it("does not warn once a real sender address is set", () => {
+    const status = statusFor({ RESEND_API_KEY: "re_test_key_123", EMAIL_FROM: "alerts@neovationlabs.example" });
+
+    expect(status.warning).toBeUndefined();
+    expect(status.from).toBe("alerts@neovationlabs.example");
+  });
+
+  it("reports SMTP when that is what is configured", () => {
+    const status = loadService().emailStatus();
+
+    expect(status).toEqual({ configured: true, provider: "smtp", recipientCount: 2 });
+  });
+
+  it("reports SMTP, and says Resend is being ignored, when both are set", () => {
+    const status = loadService({ RESEND_API_KEY: "re_test_key_123" }).emailStatus();
+
+    expect(status).toMatchObject({ configured: true, provider: "smtp", recipientCount: 2 });
+    expect(status.note).toMatch(/SMTP takes priority/i);
+  });
+
+  it("never includes a key, a password, or a recipient address", () => {
+    const published = JSON.stringify([
+      statusFor({ RESEND_API_KEY: "re_test_key_123" }),
+      loadService().emailStatus(),
+    ]);
+
+    expect(published).not.toContain("re_test_key_123");
+    expect(published).not.toContain("not-a-real-password");
+    expect(published).not.toContain("sender@test.example");
+    expect(published).not.toContain("neovationlabs@outlook.com");
   });
 });

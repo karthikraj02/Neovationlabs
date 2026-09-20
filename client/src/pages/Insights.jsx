@@ -14,7 +14,7 @@ const fallback = staticInsights.map((i) => ({ ...i }));
 
 export default function Insights() {
   usePageMeta("Insights", "Practical writing on AI engineering, agentic systems, and production software.");
-  const { status, data, usedFallback, retry } = useApiResource(fetchInsights, { fallback });
+  const { status, data, usedFallback, retry } = useApiResource(fetchInsights, { fallback, emptyMeansFallback: true });
 
   const normalized = (data || []).map((i) => ({
     ...i,

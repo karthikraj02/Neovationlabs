@@ -80,26 +80,30 @@ async function sendViaResend({ subject, text, replyTo }) {
   return failed.length ? { sent: true, failed: failed.map((f) => f.to) } : { sent: true };
 }
 
-// Send one notification with whichever provider is configured: Resend if
-// RESEND_API_KEY is set, otherwise SMTP. `what` only names the email in the log.
+// Send one notification with whichever provider is configured. SMTP wins when it is
+// fully set up: it takes three deliberate values rather than one, and it delivers to
+// every recipient. Resend's free sender only reaches the Resend account owner, so a
+// leftover RESEND_API_KEY must not quietly override a working SMTP setup — that trap
+// is exactly what kept the live notification emails from arriving.
+// `what` only names the email in the log.
 async function deliver(message, what) {
-  if (emailConfig.resendApiKey) return sendViaResend(message);
-
   const mailer = getTransporter();
-  if (!mailer) {
-    // eslint-disable-next-line no-console
-    console.warn(`[email] Email is not configured (set RESEND_API_KEY, or SMTP_*) — skipping ${what}.`);
-    return { sent: false, reason: "email-not-configured" };
+  if (mailer) {
+    await mailer.sendMail({
+      from: `"NeovationLabs" <${smtp.user}>`,
+      to: smtp.notifyTo,
+      replyTo: message.replyTo,
+      subject: message.subject,
+      text: message.text,
+    });
+    return { sent: true };
   }
 
-  await mailer.sendMail({
-    from: `"NeovationLabs" <${smtp.user}>`,
-    to: smtp.notifyTo,
-    replyTo: message.replyTo,
-    subject: message.subject,
-    text: message.text,
-  });
-  return { sent: true };
+  if (emailConfig.resendApiKey) return sendViaResend(message);
+
+  // eslint-disable-next-line no-console
+  console.warn(`[email] Email is not configured (set SMTP_*, or RESEND_API_KEY) — skipping ${what}.`);
+  return { sent: false, reason: "email-not-configured" };
 }
 
 async function sendContactNotification(submission) {
@@ -171,4 +175,44 @@ async function sendDemoBookingNotification(booking) {
   );
 }
 
-module.exports = { sendContactNotification, sendDemoBookingNotification };
+// Whether email is set up on this server and which way it sends, for the health page.
+// Safe to show publicly: no key, no password, no recipient addresses (only how many).
+function emailStatus() {
+  const recipientCount = smtp.notifyTo.length;
+
+  // Same order as deliver(): SMTP first.
+  if (smtp.host && smtp.user && smtp.password) {
+    return {
+      configured: true,
+      provider: "smtp",
+      recipientCount,
+      ...(emailConfig.resendApiKey
+        ? { note: "RESEND_API_KEY is also set but is ignored; SMTP takes priority." }
+        : {}),
+    };
+  }
+
+  if (emailConfig.resendApiKey) {
+    const testSender = /@resend\.dev>?$/i.test(emailConfig.from);
+    return {
+      configured: true,
+      provider: "resend",
+      from: emailConfig.from,
+      recipientCount,
+      ...(testSender
+        ? {
+            warning:
+              "This is Resend's free test sender. Resend only delivers to the email address the Resend account was created with, so other recipients are refused. Verify a domain in Resend and set EMAIL_FROM to an address on it, or use SMTP (and remove RESEND_API_KEY), to reach every recipient.",
+          }
+        : {}),
+    };
+  }
+  return {
+    configured: false,
+    provider: null,
+    recipientCount,
+    hint: "No email service is set up on this server. Set SMTP_HOST, SMTP_USER and SMTP_PASSWORD (or RESEND_API_KEY) in the server's environment variables for Production, then redeploy.",
+  };
+}
+
+module.exports = { sendContactNotification, sendDemoBookingNotification, emailStatus };

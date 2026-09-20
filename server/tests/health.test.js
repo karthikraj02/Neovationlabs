@@ -16,6 +16,19 @@ describe("GET /api/health", () => {
   });
 });
 
+describe("GET /api/health notifications", () => {
+  it("says whether email and WhatsApp alerts are set up, without exposing any secret or address", async () => {
+    const res = await request(app).get("/api/health");
+
+    expect(res.body.notifications.email).toMatchObject({ configured: false, provider: null });
+    expect(res.body.notifications.email.hint).toMatch(/RESEND_API_KEY/);
+    expect(res.body.notifications.whatsapp).toMatchObject({ configured: false, provider: null });
+    const published = JSON.stringify(res.body);
+    expect(published).not.toMatch(/neovationlabs@outlook\.com|neovationlabs\.official@gmail\.com/);
+    expect(published).not.toMatch(/re_[A-Za-z0-9_]{10,}/);
+  });
+});
+
 describe("Unknown route", () => {
   it("returns a 404 with a helpful message", async () => {
     const res = await request(app).get("/api/does-not-exist");

@@ -26,6 +26,27 @@ const FILTERS = [
 ];
 const STATUSES = FILTERS.slice(1);
 
+// What happened to one team alert (email or WhatsApp) for an enquiry.
+const ALERT_LOOK = {
+  sent: { label: "Sent", tone: "text-signal" },
+  partial: { label: "Sent to some recipients only", tone: "text-amber-500" },
+  skipped: { label: "Not sent", tone: "text-ink-faint" },
+  failed: { label: "Failed", tone: "text-red-500" },
+  "timed-out": { label: "Did not finish in time", tone: "text-amber-500" },
+};
+
+function AlertLine({ name, alert }) {
+  if (!alert || !alert.status) return null;
+  const look = ALERT_LOOK[alert.status] || { label: alert.status, tone: "text-ink-dim" };
+  return (
+    <li className="flex flex-wrap gap-x-2">
+      <span className="w-20 shrink-0 text-ink-faint">{name}</span>
+      <span className={look.tone}>{look.label}</span>
+      {alert.detail && <span className="text-ink-faint">· {alert.detail}</span>}
+    </li>
+  );
+}
+
 export default function Enquiries() {
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
@@ -139,6 +160,16 @@ export default function Enquiries() {
                         </a>
                       )}
                     </div>
+
+                    {item.alerts && (item.alerts.email || item.alerts.whatsapp) && (
+                      <div className="mt-4 text-xs">
+                        <div className={labelClass}>Team alerts</div>
+                        <ul className="mt-2 space-y-1">
+                          <AlertLine name="Email" alert={item.alerts.email} />
+                          <AlertLine name="WhatsApp" alert={item.alerts.whatsapp} />
+                        </ul>
+                      </div>
+                    )}
 
                     <div className="mt-5 flex flex-wrap items-center gap-3">
                       <span className={labelClass}>Mark as</span>

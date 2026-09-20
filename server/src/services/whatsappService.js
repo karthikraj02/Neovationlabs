@@ -115,4 +115,16 @@ async function sendContactWhatsApp(submission) {
   return sendWhatsAppAlert(contactMessage(submission));
 }
 
-module.exports = { sendContactWhatsApp, sendWhatsAppAlert, contactMessage, activeProvider };
+/** Whether WhatsApp alerts are set up on this server, for the health page. No secrets. */
+function whatsappStatus() {
+  const provider = activeProvider();
+  return provider
+    ? { configured: true, provider }
+    : {
+        configured: false,
+        provider: null,
+        hint: "WhatsApp alerts are off. Set CALLMEBOT_API_KEY, or WHATSAPP_TOKEN and WHATSAPP_PHONE_NUMBER_ID, in the server's environment variables.",
+      };
+}
+
+module.exports = { sendContactWhatsApp, sendWhatsAppAlert, contactMessage, activeProvider, whatsappStatus };

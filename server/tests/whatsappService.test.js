@@ -76,6 +76,14 @@ describe("WhatsApp alerts", () => {
     expect(text.endsWith("…")).toBe(true);
   });
 
+  it("reports whether WhatsApp is set up, without exposing keys", () => {
+    expect(loadService().whatsappStatus()).toMatchObject({ configured: false, provider: null });
+    expect(loadService({ CALLMEBOT_API_KEY: "key-123" }).whatsappStatus()).toEqual({ configured: true, provider: "callmebot" });
+    const cloud = loadService({ WHATSAPP_TOKEN: "test-token", WHATSAPP_PHONE_NUMBER_ID: "1234567890" }).whatsappStatus();
+    expect(cloud).toEqual({ configured: true, provider: "cloud" });
+    expect(JSON.stringify(cloud)).not.toContain("test-token");
+  });
+
   describe("Meta WhatsApp Cloud API", () => {
     const cloudEnv = { WHATSAPP_TOKEN: "test-token", WHATSAPP_PHONE_NUMBER_ID: "1234567890" };
 

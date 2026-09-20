@@ -68,6 +68,70 @@ describe("POST /api/contact", () => {
     error.mockRestore();
   });
 
+  describe("records what happened to the alerts with the enquiry", () => {
+    const savedAlerts = () => ContactSubmission.updateOne.mock.calls[0][1].$set.alerts;
+
+    it("notes when both alerts were sent", async () => {
+      ContactSubmission.create.mockResolvedValue({ _id: "abc123" });
+      sendContactNotification.mockResolvedValueOnce({ sent: true });
+      sendContactWhatsApp.mockResolvedValueOnce({ sent: true, provider: "callmebot" });
+
+      await request(app).post("/api/contact").send(validPayload);
+
+      expect(ContactSubmission.updateOne.mock.calls[0][0]).toEqual({ _id: "abc123" });
+      expect(savedAlerts().email).toEqual({ status: "sent" });
+      expect(savedAlerts().whatsapp).toEqual({ status: "sent" });
+      expect(savedAlerts().at).toBeInstanceOf(Date);
+    });
+
+    it("notes when an alert was skipped because that service is not set up", async () => {
+      ContactSubmission.create.mockResolvedValue({ _id: "abc123" });
+      sendContactNotification.mockResolvedValueOnce({ sent: false, reason: "email-not-configured" });
+      sendContactWhatsApp.mockResolvedValueOnce({ sent: false, reason: "whatsapp-not-configured" });
+
+      await request(app).post("/api/contact").send(validPayload);
+
+      expect(savedAlerts().email).toEqual({ status: "skipped", detail: "email-not-configured" });
+      expect(savedAlerts().whatsapp).toEqual({ status: "skipped", detail: "whatsapp-not-configured" });
+    });
+
+    it("notes a partial delivery, naming who missed out", async () => {
+      ContactSubmission.create.mockResolvedValue({ _id: "abc123" });
+      sendContactNotification.mockResolvedValueOnce({ sent: true, failed: ["neovationlabs@outlook.com"] });
+
+      await request(app).post("/api/contact").send(validPayload);
+
+      expect(savedAlerts().email).toEqual({
+        status: "partial",
+        detail: "Not delivered to neovationlabs@outlook.com",
+      });
+    });
+
+    it("notes a failure with the reason, while the visitor still gets a success", async () => {
+      ContactSubmission.create.mockResolvedValue({ _id: "abc123" });
+      sendContactNotification.mockRejectedValueOnce(new Error("Resend delivered to no one. Resend responded 403"));
+      const error = jest.spyOn(console, "error").mockImplementation(() => {});
+
+      const res = await request(app).post("/api/contact").send(validPayload);
+
+      expect(res.statusCode).toBe(201);
+      expect(savedAlerts().email).toEqual({ status: "failed", detail: "Resend delivered to no one. Resend responded 403" });
+      error.mockRestore();
+    });
+
+    it("does not fail the submission if recording the outcome itself fails", async () => {
+      ContactSubmission.create.mockResolvedValue({ _id: "abc123" });
+      ContactSubmission.updateOne.mockRejectedValueOnce(new Error("database hiccup"));
+      const error = jest.spyOn(console, "error").mockImplementation(() => {});
+
+      const res = await request(app).post("/api/contact").send(validPayload);
+
+      expect(res.statusCode).toBe(201);
+      expect(res.body.success).toBe(true);
+      error.mockRestore();
+    });
+  });
+
   it("does not hold the visitor up when an alert provider never answers", async () => {
     jest.useFakeTimers();
     try {

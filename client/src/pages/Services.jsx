@@ -26,7 +26,7 @@ export default function ServicesPage() {
     "Services",
     "Generative AI, custom software, computer vision, agentic workflows, data engineering, MLOps, predictive analytics, networking, and IoT."
   );
-  const { status, data, usedFallback, retry } = useApiResource(fetchServices, { fallback });
+  const { status, data, usedFallback, retry } = useApiResource(fetchServices, { fallback, emptyMeansFallback: true });
 
   return (
     <>

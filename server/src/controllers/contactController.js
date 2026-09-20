@@ -22,6 +22,18 @@ async function waitForAlerts(alerts) {
   }
 }
 
+// What an alert returned, as the short record kept with the enquiry.
+function outcomeOf(result) {
+  if (result && result.sent) {
+    return result.failed && result.failed.length
+      ? { status: "partial", detail: `Not delivered to ${result.failed.join(", ")}` }
+      : { status: "sent" };
+  }
+  return { status: "skipped", detail: (result && result.reason) || "not configured" };
+}
+
+const failureOf = (err) => ({ status: "failed", detail: String((err && err.message) || err).slice(0, 400) });
+
 async function submitContact(req, res, next) {
   try {
     // eslint-disable-next-line no-unused-vars
@@ -32,16 +44,41 @@ async function submitContact(req, res, next) {
       ip: req.ip,
     });
 
+    const alerts = { email: null, whatsapp: null };
     await waitForAlerts([
-      sendContactNotification(data).catch((err) => {
-        // eslint-disable-next-line no-console
-        console.error("[email] Failed to send contact notification:", err.message);
-      }),
-      sendContactWhatsApp(data).catch((err) => {
-        // eslint-disable-next-line no-console
-        console.error("[whatsapp] Failed to send contact alert:", err.message);
-      }),
+      sendContactNotification(data)
+        .then((result) => {
+          alerts.email = outcomeOf(result);
+        })
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.error("[email] Failed to send contact notification:", err.message);
+          alerts.email = failureOf(err);
+        }),
+      sendContactWhatsApp(data)
+        .then((result) => {
+          alerts.whatsapp = outcomeOf(result);
+        })
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.error("[whatsapp] Failed to send contact alert:", err.message);
+          alerts.whatsapp = failureOf(err);
+        }),
     ]);
+
+    // Keep the outcome with the enquiry, so "did anyone get told?" always has an answer.
+    // An alert still running when the wait cap hit is recorded as timed-out. This must
+    // never fail the submission, which is already saved.
+    try {
+      const timedOut = { status: "timed-out", detail: "Still running when the response was sent" };
+      await ContactSubmission.updateOne(
+        { _id: submission._id },
+        { $set: { alerts: { email: alerts.email || timedOut, whatsapp: alerts.whatsapp || timedOut, at: new Date() } } }
+      );
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("[alerts] Could not record the alert outcome:", err.message);
+    }
 
     return res.status(201).json({
       success: true,
