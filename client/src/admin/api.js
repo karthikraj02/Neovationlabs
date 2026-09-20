@@ -56,6 +56,10 @@ export const adminApi = {
   demoBookings: (params) => client.get("/demo-bookings", { params }).then((r) => r.data),
   updateDemoBooking: (id, body) => client.patch(`/demo-bookings/${id}`, body).then((r) => r.data.data),
 
+  visitors: (params) => client.get("/visitors", { params }).then((r) => r.data),
+  visitor: (ip) => client.get("/visitors/detail", { params: { ip } }).then((r) => r.data.data),
+  deleteVisitor: (ip) => client.delete("/visitors", { params: { ip } }).then((r) => r.data),
+
   projects: (params) => client.get("/projects", { params }).then((r) => r.data.data),
   project: (id) => client.get(`/projects/${id}`).then((r) => r.data.data),
   createProject: (body) => client.post("/projects", body).then((r) => r.data.data),

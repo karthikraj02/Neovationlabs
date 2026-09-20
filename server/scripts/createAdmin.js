@@ -11,6 +11,7 @@ const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const { mongodbUri } = require("../src/config/env");
 const Admin = require("../src/models/Admin");
+const { connectForScript } = require("./connect");
 
 const MIN_PASSWORD_LENGTH = 12;
 
@@ -46,13 +47,14 @@ async function main() {
     process.exit(1);
   }
 
+  await connectForScript(mongodbUri);
+
   const password = process.env.ADMIN_PASSWORD || (await promptHidden(`Password (min ${MIN_PASSWORD_LENGTH} characters): `));
   if (password.length < MIN_PASSWORD_LENGTH) {
     console.error(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`);
     process.exit(1);
   }
 
-  await mongoose.connect(mongodbUri);
   const existing = await Admin.exists({ email });
   const passwordHash = await bcrypt.hash(password, 12);
   await Admin.findOneAndUpdate({ email }, { email, name, passwordHash }, { upsert: true });

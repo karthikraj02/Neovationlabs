@@ -1,8 +1,9 @@
 // Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 const mongoose = require("mongoose");
 
-// Anonymous, first-party page views. No IP address or cookie is stored — a
-// visitor is a random id the browser generates and keeps in localStorage.
+// Anonymous, first-party page views. No IP address or cookie is stored here — a
+// visitor is a random id the browser generates and keeps in localStorage. (IP addresses
+// are recorded separately, with a shorter retention, in the VisitLog collection.)
 const pageViewSchema = new mongoose.Schema({
   path: { type: String, required: true, trim: true, maxlength: 300 },
   visitorId: { type: String, required: true, maxlength: 64 },

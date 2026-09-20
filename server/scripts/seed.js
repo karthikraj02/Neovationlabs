@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const { mongodbUri } = require("../src/config/env");
 const Service = require("../src/models/Service");
 const Insight = require("../src/models/Insight");
+const { connectForScript } = require("./connect");
 
 const services = [
   { name: "Generative AI & LLM Applications", slug: "generative-ai", order: 1,
@@ -93,7 +94,7 @@ async function seed() {
     process.exit(1);
   }
 
-  await mongoose.connect(mongodbUri);
+  await connectForScript(mongodbUri);
   console.log("Connected to MongoDB. Seeding...");
 
   for (const service of services) {

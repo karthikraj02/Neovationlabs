@@ -1,9 +1,11 @@
 // Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 jest.mock("../src/models/PageView");
+jest.mock("../src/models/VisitLog");
 
 const request = require("supertest");
 const app = require("../src/app");
 const PageView = require("../src/models/PageView");
+const VisitLog = require("../src/models/VisitLog");
 
 const MOBILE_UA =
   "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148";
@@ -19,6 +21,7 @@ describe("POST /api/analytics/pageview", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     PageView.create.mockResolvedValue({});
+    VisitLog.create.mockResolvedValue({});
   });
 
   it("records an anonymous page view with only the referring domain", async () => {
@@ -72,5 +75,77 @@ describe("POST /api/analytics/pageview", () => {
 
     expect(res.statusCode).toBe(400);
     expect(PageView.create).not.toHaveBeenCalled();
+  });
+});
+
+describe("POST /api/analytics/pageview: the IP-tagged visit log", () => {
+  const post = (extra = {}) =>
+    request(app)
+      .post("/api/analytics/pageview")
+      .set("User-Agent", MOBILE_UA)
+      .set(extra)
+      .send(payload);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    PageView.create.mockResolvedValue({});
+    VisitLog.create.mockResolvedValue({});
+  });
+
+  it("records the visitor's IP with the visit, for the admin's Visitors page", async () => {
+    const res = await post({ "X-Forwarded-For": "203.0.113.7" });
+
+    expect(res.statusCode).toBe(204);
+    expect(VisitLog.create).toHaveBeenCalledWith({
+      ip: "203.0.113.7",
+      path: "/services",
+      visitorId: payload.visitorId,
+      sessionId: payload.sessionId,
+      referrer: "google.com",
+      device: "mobile",
+      country: "",
+    });
+  });
+
+  it("keeps the anonymous page view free of any IP address", async () => {
+    await post({ "X-Forwarded-For": "203.0.113.7" });
+
+    expect(JSON.stringify(PageView.create.mock.calls[0][0])).not.toContain("203.0.113.7");
+    expect(PageView.create.mock.calls[0][0]).not.toHaveProperty("ip");
+  });
+
+  it("stores the same address one way, so one person never looks like two", async () => {
+    await post({ "X-Forwarded-For": "::ffff:203.0.113.7" });
+
+    expect(VisitLog.create.mock.calls[0][0].ip).toBe("203.0.113.7");
+  });
+
+  it("stores an IPv6 address in lower case", async () => {
+    await post({ "X-Forwarded-For": "2001:DB8::8A2E:370:7334" });
+
+    expect(VisitLog.create.mock.calls[0][0].ip).toBe("2001:db8::8a2e:370:7334");
+  });
+
+  it("still records the anonymous view, and answers normally, if the IP log fails", async () => {
+    VisitLog.create.mockRejectedValue(new Error("database hiccup"));
+    const error = jest.spyOn(console, "error").mockImplementation(() => {});
+
+    const res = await post({ "X-Forwarded-For": "203.0.113.7" });
+
+    expect(res.statusCode).toBe(204);
+    expect(PageView.create).toHaveBeenCalledTimes(1);
+    error.mockRestore();
+  });
+
+  it("records nothing, in either collection, for a bot", async () => {
+    const res = await request(app)
+      .post("/api/analytics/pageview")
+      .set("User-Agent", "Googlebot/2.1 (+http://www.google.com/bot.html)")
+      .set("X-Forwarded-For", "203.0.113.7")
+      .send(payload);
+
+    expect(res.statusCode).toBe(204);
+    expect(PageView.create).not.toHaveBeenCalled();
+    expect(VisitLog.create).not.toHaveBeenCalled();
   });
 });

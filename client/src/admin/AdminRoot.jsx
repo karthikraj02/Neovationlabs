@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Overview from "./pages/Overview";
 import Enquiries from "./pages/Enquiries";
 import DemoBookings from "./pages/DemoBookings";
+import Visitors from "./pages/Visitors";
 import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
 import ProjectEditor from "./pages/ProjectEditor";
@@ -59,6 +60,7 @@ export default function AdminRoot() {
           <Route index element={<Overview />} />
           <Route path="enquiries" element={<Enquiries />} />
           <Route path="demo-bookings" element={<DemoBookings />} />
+          <Route path="visitors" element={<Visitors />} />
           <Route path="projects" element={<Projects />} />
           <Route path="projects/new" element={<ProjectEditor />} />
           <Route path="projects/:id" element={<ProjectDetail />} />

@@ -16,6 +16,7 @@ const {
   deleteProject,
   addProjectUpdate,
 } = require("../controllers/projectController");
+const { listVisitors, getVisitorDetail, deleteVisitor } = require("../controllers/visitorController");
 const { requireAdmin, validId } = require("../middleware/requireAdmin");
 const { validateBody } = require("../middleware/validateBody");
 const { loginLimiter } = require("../middleware/rateLimiters");
@@ -48,6 +49,10 @@ router.patch("/enquiries/:id", validId, validateBody(enquiryUpdateSchema), updat
 
 router.get("/demo-bookings", listDemoBookings);
 router.patch("/demo-bookings/:id", validId, validateBody(demoBookingUpdateSchema), updateDemoBooking);
+
+router.get("/visitors", listVisitors);
+router.get("/visitors/detail", getVisitorDetail);
+router.delete("/visitors", deleteVisitor);
 
 router.get("/projects", listProjects);
 router.post("/projects", validateBody(projectCreateSchema), createProject);

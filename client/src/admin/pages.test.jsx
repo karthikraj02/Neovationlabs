@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { adminApi } from "./api";
 import { ADMIN_BASE } from "./config";
@@ -9,9 +9,13 @@ import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
 import Enquiries from "./pages/Enquiries";
 import DemoBookings from "./pages/DemoBookings";
+import Visitors from "./pages/Visitors";
 
 vi.mock("./api", () => ({
   adminApi: {
+      visitors: vi.fn(),
+      visitor: vi.fn(),
+      deleteVisitor: vi.fn(),
     stats: vi.fn(),
     enquiries: vi.fn(),
     updateEnquiry: vi.fn(),
@@ -290,5 +294,129 @@ describe("admin enquiries and demo requests", () => {
     fireEvent.click(await screen.findByRole("button", { name: /Grace Hopper/ }));
     expect(screen.getAllByText("DocQuery — Offline Document Q&A").length).toBeGreaterThan(0);
     expect(screen.getByRole("button", { name: "Save booking" })).toBeInTheDocument();
+  });
+});
+
+describe("admin visitors", () => {
+  const row = {
+    ip: "203.0.113.7",
+    visits: 3,
+    pageViews: 9,
+    devices: 1,
+    firstSeen: "2026-09-01T05:00:00.000Z",
+    lastSeen: "2026-09-19T10:00:00.000Z",
+    country: "IN",
+    device: "mobile",
+    lastPath: "/contact",
+  };
+  const detail = {
+    ip: "203.0.113.7",
+    totals: { pageViews: 3, visits: 2, devices: 1 },
+    truncated: false,
+    visits: [
+      {
+        sessionId: "s2",
+        startedAt: "2026-09-19T10:00:00.000Z",
+        endedAt: "2026-09-19T10:02:00.000Z",
+        device: "mobile",
+        country: "IN",
+        referrer: "google.com",
+        pages: [
+          { path: "/services", at: "2026-09-19T10:00:00.000Z" },
+          { path: "/contact", at: "2026-09-19T10:02:00.000Z" },
+        ],
+      },
+      {
+        sessionId: "s1",
+        startedAt: "2026-09-01T05:00:00.000Z",
+        endedAt: "2026-09-01T05:00:00.000Z",
+        device: "mobile",
+        country: "IN",
+        referrer: "",
+        pages: [{ path: "/", at: "2026-09-01T05:00:00.000Z" }],
+      },
+    ],
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    adminApi.visitors.mockResolvedValue({ data: [row], page: 1, pages: 1, total: 1, range: { days: 30 } });
+    adminApi.visitor.mockResolvedValue(detail);
+  });
+
+  it("lists each visitor by IP with how many times they visited, and marks returning visitors", async () => {
+    renderAt(<Visitors />);
+
+    expect(await screen.findByText("203.0.113.7")).toBeInTheDocument();
+    const rowButton = screen.getByRole("button", { name: /203\.0\.113\.7, 3 visits/ });
+    expect(rowButton).toHaveTextContent("9"); // page views
+    expect(rowButton).toHaveTextContent("Returning");
+    expect(adminApi.visitors).toHaveBeenCalledWith({ days: 30, q: undefined, page: 1 });
+  });
+
+  it("does not call a single visit 'returning'", async () => {
+    adminApi.visitors.mockResolvedValue({ data: [{ ...row, visits: 1 }], page: 1, pages: 1, total: 1, range: { days: 30 } });
+    renderAt(<Visitors />);
+
+    const rowButton = await screen.findByRole("button", { name: /203\.0\.113\.7, 1 visit/ });
+    expect(rowButton).not.toHaveTextContent("Returning");
+  });
+
+  it("opens a visitor to show every visit with its date, time and pages", async () => {
+    renderAt(<Visitors />);
+
+    fireEvent.click(await screen.findByRole("button", { name: /203\.0\.113\.7/ }));
+
+    expect(adminApi.visitor).toHaveBeenCalledWith("203.0.113.7");
+    expect(await screen.findByText(/2 visits · 3 page views · 1 device/)).toBeInTheDocument();
+    expect(screen.getByText("/services")).toBeInTheDocument();
+    expect(screen.getByText("/contact")).toBeInTheDocument();
+    expect(screen.getByText(/from google\.com/)).toBeInTheDocument();
+    expect(screen.queryByText(/share this address/i)).not.toBeInTheDocument();
+  });
+
+  it("warns that several devices on one address may be several people", async () => {
+    adminApi.visitor.mockResolvedValue({ ...detail, totals: { pageViews: 3, visits: 2, devices: 2 } });
+    renderAt(<Visitors />);
+
+    fireEvent.click(await screen.findByRole("button", { name: /203\.0\.113\.7/ }));
+
+    expect(await screen.findByText(/share this address/i)).toBeInTheDocument();
+  });
+
+  it("changes the time range and searches by IP", async () => {
+    renderAt(<Visitors />);
+    await screen.findByText("203.0.113.7");
+
+    fireEvent.click(screen.getByRole("button", { name: "90 days" }));
+    await waitFor(() => expect(adminApi.visitors).toHaveBeenLastCalledWith({ days: 90, q: undefined, page: 1 }));
+
+    fireEvent.change(screen.getByLabelText("Search visitors by IP address"), { target: { value: "203.0" } });
+    await waitFor(() => expect(adminApi.visitors).toHaveBeenLastCalledWith({ days: 90, q: "203.0", page: 1 }));
+  });
+
+  it("says so plainly when nobody has visited in the period", async () => {
+    adminApi.visitors.mockResolvedValue({ data: [], page: 1, pages: 1, total: 0, range: { days: 30 } });
+    renderAt(<Visitors />);
+
+    expect(await screen.findByText(/no visitors recorded in this period/i)).toBeInTheDocument();
+  });
+
+  it("deletes a visitor's records, but only after confirmation", async () => {
+    adminApi.deleteVisitor.mockResolvedValue({ success: true, deleted: 9 });
+    const confirm = vi.spyOn(window, "confirm");
+    renderAt(<Visitors />);
+    fireEvent.click(await screen.findByRole("button", { name: /203\.0\.113\.7/ }));
+    const erase = await screen.findByRole("button", { name: /delete this visitor's records/i });
+
+    confirm.mockReturnValueOnce(false);
+    fireEvent.click(erase);
+    expect(adminApi.deleteVisitor).not.toHaveBeenCalled();
+
+    confirm.mockReturnValueOnce(true);
+    fireEvent.click(erase);
+    await waitFor(() => expect(adminApi.deleteVisitor).toHaveBeenCalledWith("203.0.113.7"));
+    await waitFor(() => expect(adminApi.visitors).toHaveBeenCalledTimes(2)); // list reloaded
+    confirm.mockRestore();
   });
 });

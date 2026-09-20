@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Karthik Raj. All rights reserved. https://beautiful-alpaca-6b1495.netlify.app/
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { FolderKanban, Inbox, LayoutDashboard, LogOut, Video } from "lucide-react";
+import { FolderKanban, Globe, Inbox, LayoutDashboard, LogOut, Video } from "lucide-react";
 import { useAuth } from "./AuthContext";
 import { ADMIN_BASE } from "./config";
 import { cn } from "../lib/utils";
@@ -9,6 +9,7 @@ const NAV = [
   { to: "", label: "Overview", icon: LayoutDashboard, end: true },
   { to: "enquiries", label: "Enquiries", icon: Inbox },
   { to: "demo-bookings", label: "Demo requests", icon: Video },
+  { to: "visitors", label: "Visitors", icon: Globe },
   { to: "projects", label: "Projects", icon: FolderKanban },
 ];
 

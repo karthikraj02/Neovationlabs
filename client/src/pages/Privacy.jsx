@@ -18,6 +18,16 @@ export default function Privacy() {
         respond to your inquiry. It is also sent to our team by email and
         WhatsApp so we can reply quickly.
       </p>
+      <h2>Visit records</h2>
+      <p>
+        When you browse this site we record your IP address, the pages you
+        open and when, the country your connection appears to come from, your
+        device type, and a random visitor ID stored in your browser. Only our
+        team can see these records. We use them to understand how the site is
+        used and to spot abuse. Records that include your IP address are
+        deleted automatically after 90 days. To have yours deleted sooner,
+        contact us using the details below.
+      </p>
       <h2>How we use it</h2>
       <p>
         Submitted information is used solely to evaluate and respond to
