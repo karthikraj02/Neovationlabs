@@ -11,8 +11,8 @@ export default function Hero() {
       <div className="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_60%_60%_at_50%_0%,black,transparent)]" />
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-signal/5 blur-[120px]" />
 
-      <Container className="relative grid items-center gap-14 pb-16 pt-10 md:grid-cols-[1.1fr_0.9fr] md:pb-24 md:pt-10">
-        <div>
+      <Container className="relative grid items-center gap-14 pb-16 pt-10 md:grid-cols-[1.1fr_0.9fr] md:items-start md:pb-24 md:pt-10">
+        <div className="md:pt-8">
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
